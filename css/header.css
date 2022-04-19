@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Aleo:wght@700&display=swap');
+.header-Logo {
+    user-select: none;
+    font-family: 'Aleo', serif;
+}
+
+.header-btn {
+    height: 100%;
+    font-size: 0.8rem;
+}
+
+.header-btn:hover {
+    height: 100%;
+}
+
+.header-btn:active {
+    height: 100%;
+}

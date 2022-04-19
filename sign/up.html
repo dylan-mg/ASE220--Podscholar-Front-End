@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--Bootstrap CSS-->
+    <link href="../css/bootstrap.css" rel="stylesheet" />
+    <link href="../css/header.css" rel="stylesheet" />
+
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <!--Bootstrap JS/Popper Bundle-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!--jquery hosted locally-->
+    <script src="../js/jquery-3.6.0.js"></script>
+    <script src="./js/signer.js"></script>
+
+    <script>
+        if (sessionStorage.getItem("auth") == "true") {
+            window.location.href = "../index.html";
+        }
+    </script>
+
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+        <div class="d-flex w-100 justify-content-between">
+            <div class="ms-5 align-self-center">
+                <a class="navbar-brand header-Logo fs-1" href="../index.html">PodScholar</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <form id="formMan" class="d-flex align-items-center flex-column m-5">
+            <!-- Sign Up title-->
+            <h3 class="pt-2 px-2">Register Author Account</h3>
+            <small class="mb-4">Complete the form to upload podcasts</small>
+
+            <!-- Name -->
+            <div class="container my-2">
+                <div class="container mx-4 px-3">
+                    <label for="fName" class="form-label">First Name*</label>
+                    <input type="text" class="form-control" id="fName" name="fName" required/>
+                </div>
+                <div class="container mx-4 px-3">
+                    <label for="lName" class="form-label">Last Name*</label>
+                    <input type="text" class="form-control" id="lName" name="lName" required/>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="container my-2">
+                <div class="mx-4 px-3">
+                    <label for="emailMan" class="form-label my-1">Email*</label>
+                    <input type="email" class="form-control" id="emailMan" name="emailMan" required />
+                </div>
+            </div>
+
+            <strong id="emailError" class="text-danger visually-hidden">Email is already taken.</strong>
+
+            <!-- Position/Title -->
+            <div class="container my-2">
+                <div class="mx-4 px-3">
+                    <label for="posTitle" class="form-label my-1">Position/Title*</label>
+                    <input type="text" class="form-control" id="posTitle" name="posTitle" required/>
+                </div>
+            </div>
+
+            <!--Uni/org-->
+            <div class="container my-2">
+                <div class="mx-4 px-3">
+                    <label for="uniOrg" class="form-label my-1">University/Organization*</label>
+                    <input type="text" class="form-control" id="uniOrg" name="uniOrg" required/>
+                </div>
+            </div>
+
+            <!--Password-->
+            <div class="container my-2">
+                <div class="mx-4 px-3">
+                    <label for="pw" class="form-label my-1">Password*</label>
+                    <input type="password" class="form-control" id="pw" name="pw" required/>
+                </div>
+            </div>
+
+            <!--Confirm Password-->
+            <div class="container my-2">
+                <div class="mx-4 px-3">
+                    <label for="pwc" class="form-label my-1">Confirm Password*</label>
+                    <input type="password" class="form-control" id="pwc" name="pwc" required/>
+                </div>
+            </div>
+
+            <strong id="ifPWmatch" class="text-danger visually-hidden">Passwords must match</strong>
+
+            <!--Terms and conditions-->
+            <div class="form-check my-2">
+                <input class="form-check-input" type="checkbox" value="" id="termsConds" name="termsConds" required>
+                <label class="form-check-label" for="termsConds">
+                  Please Accept the Terms and Conditions
+                </label>
+            </div>
+            <!-- Sign Up Button-->
+            <button type="submit" class="btn btn-dark my-2">Sign Up!</button>
+        </form>
+
+        <div id="doneMessage" class="container visually-hidden">
+            <p>Thank you for registering with PodScholar! You can now upload podcasts!</p>
+            <p>
+                <a href="../rules.html">See Our Rules</a> or wait to be redirected!
+            </p>
+        </div>
+    </main>
+    <script>
+        signUpSetup();
+    </script>
+</body>
+
+</html>
