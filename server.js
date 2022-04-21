@@ -5,6 +5,7 @@ const fileHelpers = require('./modules/fileHelpers.js');
 const cryptoMan = require('crypto');
 const fs = require('fs');
 const express = require('express');
+const session = require('express-session');
 const app = express();
 
 // server constants
@@ -17,11 +18,11 @@ const JSON_PATH = DATA_PATH + "/json";
 const USER_PATH = JSON_PATH + "/users";
 const POD_PATH = JSON_PATH + "/pods";
 
-// for parsing json reqs
-app.use(bodyParser.json());
-// for parsing non-query data from url
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // for parsing json reqs
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing non-query data from url
 app.set('view engine', 'ejs');
+
+app.use(session({ secret: 'The Ceaseless Watcher is Present' }));
 
 // all json, css, images, etc is served from here
 // if it is used on the client side, it's gotten from this folder by express
@@ -117,5 +118,45 @@ app.get("/api/users/:fileName", (req, res) => {
 
 });
 
+app.get("/sign/in", (req, res) => {
+    res.render("./auth/in.ejs");
+});
 
-/*  */
+app.get("/sign/out", (req, res) => {
+    req.session.destroy();
+    res.render("./auth/out.ejs");
+});
+
+app.post("/sign/in", (req, res) => {
+    /* {email, password} */
+    // check if email exists
+    req.body.email = req.body.email.toLowerCase();
+    fs.readFile(`${JSON_PATH}/user_map.json`, (err, data) => {
+        let usersData = JSON.parse(data.toString());
+        for (email in usersData) {
+            if (email.toLowerCase() == req.body.email) {
+                let userName = usersData[email];
+                fs.readFile(`${USER_PATH}/${userName}.json`, (uErr, uData) => {
+                    // in future, will be converted to crypto hash matching, but for now
+                    let userData = JSON.parse(uData.toString());
+                    if (req.body.password == userData.password) {
+                        req.session.user = {
+                            ID: userData.userName,
+                            fName: userData.fName,
+                            lName: userData.lName,
+                            role: userData.role
+                        };
+                        res.send({
+                            verStat: true,
+                            id: userData.userName
+                        });
+                    } else {
+                        res.send({ verStat: false });
+                    }
+                })
+            }
+        }
+    });
+    // if it exists, check if password matches
+    // if either doesn't, respond with error
+});

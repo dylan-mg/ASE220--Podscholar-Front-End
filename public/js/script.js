@@ -2,10 +2,10 @@
 // grabs array at index and loads into a card.
 
 // Get Podcast from Dylan.
-function ajaxStuff() {
+function ajaxStuff(inurl) {
     $.ajax({
         type: "GET",
-        url: "/api/pods/newest",
+        url: inurl,
         contentType: "application/json",
         error: (xhr, status) => {
             alert("Cannot Access Newest Data at this time. Please Try again later");

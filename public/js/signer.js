@@ -8,10 +8,18 @@ function signInStart() {
 }
 
 function signIn(e) {
+    // make input data object
+    let sendData = {
+        email: e.target[0].value,
+        password: e.target[1].value
+    }
+
+    // post input data
     $.ajax({
-        type: "GET",
-        url: "https://jsonblob.com/api/jsonBlob/952466594483945472",
+        type: "POST",
+        url: "/sign/in",
         contentType: "application/json",
+        data: JSON.stringify(sendData),
         error: (xhr, status) => {
             // if the request fails, this function executes.
             //      xhr is the request sent and some info about the error
@@ -20,25 +28,23 @@ function signIn(e) {
             // This bit will be different on each page, but is a good placeholder
             alert("Cannot Access Data at this time. Please Try again later");
         },
-        success: (userData) => {
-            for (let user in userData) {
-                if (userData[user].email == e.target[0].value) {
-                    if (userData[user].password == e.target[1].value) {
-                        sessionStorage.setItem("ID", user);
-                        sessionStorage.setItem("auth", true);
+        success: (failData) => {
+            console.log(failData);
+            if (failData.verStat) {
+                window.sessionStorage.setItem("username", failData.id);
+                window.sessionStorage.setItem("auth", failData.verStat);
+                window.sessionStorage.setItem("role", failData.role);
+                console.log(window.sessionStorage);
+                window.location.href = "/";
+            } else {
+                // if not found, display invalid feedback
+                invalidFeedback.classList.remove("visually-hidden");
 
-                        window.location.href = "../index.html";
-                    }
-                }
+                // add listener to hide feedback when stuff changes
+                signForm.addEventListener("change", function() {
+                    invalidFeedback.classList.add("visually-hidden");
+                });
             }
-
-            // if not found, display invalid feedback
-            invalidFeedback.classList.remove("visually-hidden");
-
-            // add listener to hide feedback when stuff changes
-            signForm.addEventListener("change", function() {
-                invalidFeedback.classList.add("visually-hidden");
-            });
         }
     });
 }

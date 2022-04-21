@@ -1,6 +1,7 @@
 // checks if a user is signed in, returns true if so
 function bouncer() {
-    if (window.sessionStorage.getItem("ID")) {
+    console.log(window.sessionStorage);
+    if (window.sessionStorage.getItem("username")) {
         if (window.sessionStorage.getItem("auth") == "true") {
             return true;
         }
@@ -13,14 +14,15 @@ function buttonLoader() {
     if (bouncer()) {
         console.log("ping")
             // ACCOUNT INFO
-        if (window.location.pathname.slice(1) !== "profile.html") {
+        console.log(window.location.pathname);
+        if (window.location.pathname.slice(1) !== "/profile") {
             buttonMan("Profile", "bi-person-fill", `profile.html?ID=${sessionStorage.getItem("ID")}`, btnHoldingLad);
         } else {
-            buttonMan("Saved", "bi-bookmark-fill", `saved.html`, btnHoldingLad);
+            buttonMan("Saved", "bi-bookmark-fill", `/saved`, btnHoldingLad);
         }
 
-        if (window.location.pathname.slice(1) !== "upload.html") {
-            buttonMan("Upload", "bi-upload", "upload.html", btnHoldingLad);
+        if (window.location.pathname.slice(1) !== "/upload") {
+            buttonMan("Upload", "bi-upload", "/upload", btnHoldingLad);
         }
 
         // BILLING
@@ -29,11 +31,11 @@ function buttonLoader() {
         });
 
         // LOGOUT
-        buttonMan("Logout", "bi-key-fill", "./sign/out.html", btnHoldingLad);
+        buttonMan("Logout", "bi-key-fill", "/sign/out", btnHoldingLad);
         //if signed in, append a series of links
     } else {
-        buttonMan("Sign In", "bi-clipboard", "./sign/in.html", btnHoldingLad)
-        buttonMan("Sign Up", "bi-file-earmark-person", "./sign/up.html", btnHoldingLad)
+        buttonMan("Sign In", "bi-clipboard", "/sign/in", btnHoldingLad)
+        buttonMan("Sign Up", "bi-file-earmark-person", "/sign/up", btnHoldingLad)
     }
 }
 
