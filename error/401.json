@@ -1,0 +1,8 @@
+{
+    "message": "Please Try a different URL",
+    "_links": {
+        "self": {
+            "href": "/api/get/"
+        }
+    }
+}
