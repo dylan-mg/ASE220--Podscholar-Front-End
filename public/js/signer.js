@@ -58,98 +58,97 @@ function signUpSetup() {
 function signUp(e) {
     e.preventDefault();
 
-    if (!verif(e.target)) {
-        alert("Please resubmit your form.");
+    if (verif(e.target) == false) {
+        alert("Submission Failed");
     }
+}
+
+function emailCheck(formData) {
+    let sendData = {
+        email: formData.email
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/sign/up/email",
+        contentType: "application/json",
+        data: JSON.stringify(sendData),
+        success: (retdata) => {
+            if (retdata.verified == 2) {
+                console.log("2");
+                emailTakenError.classList.remove("visually-hidden");
+                return false;
+            } else if (retdata.verified == 1) {
+                console.log("object");
+                badEmailError.classList.remove("visually-hidden");
+                return false;
+            } else {
+                return true;
+            }
+        },
+        error: (xhr, status) => {
+            console.log(xhr);
+            console.log(status);
+            console.log("object");
+            alert("Cannot Register at this time. Please Try again later");
+            return false;
+        },
+    });
 }
 
 function verif(formData) {
     if (formData[5].value !== formData[6].value) {
         ifPWmatch.classList.remove("visually-hidden");
+        console.log("pw fail");
+        return false;
+    }
+
+    const dataFromForm = {
+        email: formData[2].value,
+        password: formData[5].value,
+        fName: formData[0].value,
+        lName: formData[1].value,
+        posTitle: formData[3].value,
+        uniOrg: formData[4].value,
+    };
+
+    if (emailCheck(dataFromForm) == false) {
+        console.log("email fail");
         return false;
     }
 
     $.ajax({
-        type: "GET",
-        url: "https://jsonblob.com/api/jsonBlob/952466594483945472",
+        type: "POST",
+        url: "/sign/up",
         contentType: "application/json",
+        data: JSON.stringify(dataFromForm),
         error: (xhr, status) => {
-            // if the request fails, this function executes.
-            //      xhr is the request sent and some info about the error
-            //      status is usually a small string describing the error
-
-            // This bit will be different on each page, but is a good placeholder
+            console.log(xhr);
             alert("Cannot Register at this time. Please Try again later");
         },
-        success: (userdata) => {
-            for (user of userdata) {
-                if (user.email == formData[2].value) {
-                    emailError.classList.remove("visually-hidden");
-                    return false;
-                }
+        success: (data) => {
+            if (data.message) {
+                /* formMan.classList.add("visually-hidden");
+
+                // show done message
+                doneMessage.classList.remove("visually-hidden");
+
+                // log them in
+                sessionStorage.setItem("username", data.message);
+                sessionStorage.setItem("auth", true);
+
+                // redirect automatically
+                setTimeout(() => {
+                    window.location.href = "/"
+                }, 15000); */
+                console.log("jkfdjkfd");
+                return true;
+            } else {
+                console.log("data");
+                alert("Please Resubmit your form");
+                return false;
             }
-
-            const dataFromForm = {
-                email: formData[2].value,
-                password: formData[5].value,
-                fName: formData[0].value,
-                lName: formData[1].value,
-                posTitle: formData[3].value,
-                uniOrg: formData[4].value,
-                savedPods: [],
-                history: []
-            };
-            // first get the data
-            $.ajax({
-                type: "GET",
-                url: "https://jsonblob.com/api/jsonBlob/952466594483945472",
-                contentType: "application/json",
-                error: (xhr, status) => {
-                    // if the request fails, this function executes.
-                    //      xhr is the request sent and some info about the error
-                    //      status is usually a small string describing the error
-
-                    // This bit will be different on each page, but is a good placeholder
-                    alert("Cannot register at this time. Please Try again later.");
-                },
-                success: (authdata) => {
-                    // Once you have the data, push the data from the form to the end of the already existing data
-                    authdata.push(dataFromForm);
-
-                    // upload new data to the Blob
-                    $.ajax({
-                        type: "PUT",
-                        url: "https://jsonblob.com/api/jsonBlob/952466594483945472",
-                        contentType: "application/JSON",
-                        dataType: "application/JSON",
-                        data: JSON.stringify(authdata),
-                        error: (xhr, status) => {
-                            alert("Cannot Access Data at this time. Please Try again later");
-
-                            console.log(status);
-                            console.log(xhr);
-                        },
-                        success: function(output, status, xhr) {
-                            // hide form
-                            formMan.classList.add("visually-hidden");
-
-                            // show done message
-                            doneMessage.classList.remove("visually-hidden");
-
-                            // log them in
-                            sessionStorage.setItem("email", dataFromForm.email);
-                            sessionStorage.setItem("auth", true);
-
-                            // redirect automatically
-                            setTimeout(() => {
-                                window.location.href = "../index.html"
-                            }, 15000);
-                            return true;
-                        }
-                    });
-                }
-            });
         }
-    });
+    })
 
 }

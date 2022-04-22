@@ -2,10 +2,12 @@
 // require all npm packages
 const bodyParser = require('body-parser');
 const fileHelpers = require('./modules/fileHelpers.js');
+const authHelper = require('./modules/authHelper.js');
 const cryptoMan = require('crypto');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
+const { raw } = require('express');
 const app = express();
 
 // server constants
@@ -118,13 +120,13 @@ app.get("/api/users/:fileName", (req, res) => {
 
 });
 
-app.get("/sign/in", (req, res) => {
-    res.render("./auth/in.ejs");
-});
-
 app.get("/sign/out", (req, res) => {
     req.session.destroy();
     res.render("./auth/out.ejs");
+});
+
+app.get("/sign/in", (req, res) => {
+    res.render("./auth/in.ejs");
 });
 
 app.post("/sign/in", (req, res) => {
@@ -159,4 +161,50 @@ app.post("/sign/in", (req, res) => {
     });
     // if it exists, check if password matches
     // if either doesn't, respond with error
+});
+
+app.get("/sign/up", (req, res) => {
+    res.render("./auth/up.ejs");
+})
+
+app.post("/sign/up/email", (req, res) => {
+    let echeck = authHelper.emailCheck(req.body, res);
+    if (echeck == 0) {
+        console.log("success");
+        res.send({ verified: 0 });
+    }
+});
+
+app.post("/sign/up", (req, res) => {
+    let echeck = authHelper.emailCheck(req.body, res);
+
+    if (echeck != 0) {
+        console.log("Unsuccessful Email Check");
+    } else {
+        console.log("success");
+        let newEntryData = req.body;
+        let fixedFname = req.body.fName.toLowerCase();
+        let fixedLname = req.body.lName.toLowerCase();
+        let fileName = `${fixedFname}-${fixedLname}`
+
+        newEntryData.saves = [];
+        newEntryData.likes = [];
+        newEntryData.role = 0;
+        let ext = "";
+        var track = 1;
+        while (fs.existsSync(`${USER_PATH}/${fileName}${ext}.json`)) {
+            ext = "-" + track++;
+        }
+        fileName += ext;
+        fs.writeFileSync(`${USER_PATH}/${fileName}.json`, JSON.stringify(newEntryData));
+
+        let mapStuff = fs.openSync(`${JSON_PATH}/user_map.json`);
+        let rawData = fs.readFileSync(`${JSON_PATH}/user_map.json`);
+        let parsedData = JSON.parse(rawData.toString());
+        parsedData[req.body.email] = fileName;
+        fs.writeFileSync(`${JSON_PATH}/user_map.json`, JSON.stringify(parsedData));
+        fs.closeSync(mapStuff);
+
+        res.send({ message: fileName });
+    }
 });

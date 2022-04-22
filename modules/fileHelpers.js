@@ -12,6 +12,9 @@ function fileNamer(suffix = "") {
 function fileMaker(fileData, path, suffix = "") {
     // generate the file name
     let fileName;
+    if (suffix != "") {
+        suffix = "_" + suffix;
+    }
     do {
         fileName = fileNamer(suffix);
         // if the file exists, make new name
@@ -19,7 +22,7 @@ function fileMaker(fileData, path, suffix = "") {
 
     fs.openSync(`${path}/${fileName}.json`);
     fs.writeFileSync(`${path}/${fileName}.json`, fileData);
-    fs.closeSync()
+    fs.closeSync();
 }
 
 function dataFixer(data, fileName) {
