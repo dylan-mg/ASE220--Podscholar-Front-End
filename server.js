@@ -208,3 +208,13 @@ app.post("/sign/up", (req, res) => {
         res.send({ message: fileName });
     }
 });
+
+app.get("/pages/:pageName", (req, res) => {
+    const viewsPath = "./views/pages";
+    let fileName = req.params.pageName;
+    if (fs.existsSync(`${viewsPath}/${fileName}.ejs`)) {
+        res.render(`./pages/${fileName}.ejs`);
+    } else {
+        res.redirect("/");
+    }
+})

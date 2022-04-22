@@ -32,6 +32,12 @@ function populateCardSimple(cardData, newCard, podName) {
     newCard.querySelector(".bi-hand-thumbs-up").append(cardData.likes);
     // saves
     newCard.querySelector(".bi-bookmark").append(cardData.saves);
+
+    if (sessionStorage.getItem("auth") == "true") {
+        newCard.querySelector(".card-lbtn").classList.remove("disabled");
+        newCard.querySelector(".card-sbtn").classList.remove("disabled");
+    }
+
     // audio player
     newCard.querySelector(".card-audio").setAttribute("src", `/audio/${podName}.mp3`);
 }

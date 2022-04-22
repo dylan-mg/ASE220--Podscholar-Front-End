@@ -41,15 +41,10 @@
                 </div>
         </main>
         <!-- Footer-->
-        <footer class="py-5 bg-dark">
-            <ul>
-                <li><a href="about.html" class="link-secondary">About Us</a></li>
-                <li><a href="rules.html" class="link-secondary">Podcast Rules</a></li>
-            </ul>
-        </footer>
-        <script>
-            ajaxStuff("/api/pods/newest");
-        </script>
+        <%- include('./components/footer.html') %>
+            <script>
+                ajaxStuff("/api/pods/newest");
+            </script>
 </body>
 
 </html>
