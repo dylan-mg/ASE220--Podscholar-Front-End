@@ -7,6 +7,7 @@
 
     <!--Bootstrap CSS-->
     <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
     <link href="/css/header.css" rel="stylesheet" />
 
     <!--Bootstrap Icons-->
@@ -38,28 +39,29 @@
         </div>
     </nav>
 
-    <main>
-        <form id="formMan" class="d-flex align-items-center flex-column m-5">
+    <main class="mx-md-5">
+        <form id="formMan" class="d-flex align-items-center flex-column m-5 px-md-5">
             <!-- Sign Up title-->
-            <h3 class="pt-2 px-2">Register Author Account</h3>
-            <small class="mb-4">Complete the form to upload podcasts</small>
+            <h3 class="pt-2 px-2">Register User Account</h3>
+            <small>Complete the form to upload podcasts</small>
+            <small class="mb-4 text-danger">* indicates required fields</small>
 
             <!-- Name -->
-            <div class="container my-2">
-                <div class="container mx-4 px-3">
-                    <label for="fName" class="form-label">First Name*</label>
+            <div class="my-2 d-flex flex-row flex-wrap">
+                <div class="ms-md-4 me-md-2 mx-4 px-2">
+                    <label for="fName" class="form-label">First Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="fName" name="fName" required/>
                 </div>
-                <div class="container mx-4 px-3">
-                    <label for="lName" class="form-label">Last Name*</label>
+                <div class="ms-md-2 me-md-4 mx-4 px-2">
+                    <label for="lName" class="form-label">Last Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="lName" name="lName" required/>
                 </div>
             </div>
 
             <!-- Email -->
-            <div class="container my-2">
-                <div class="mx-4 px-3">
-                    <label for="emailMan" class="form-label my-1">Email*</label>
+            <div class="my-2 w-75">
+                <div class="mx-md-5 px-md-5">
+                    <label for="emailMan" class="form-label my-1">Email <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" id="emailMan" name="emailMan" required />
                 </div>
             </div>
@@ -68,33 +70,25 @@
             <strong id="badEmailError" class="text-danger visually-hidden">Please Enter a valid email</strong>
 
             <!-- Position/Title -->
-            <div class="container my-2">
-                <div class="mx-4 px-3">
+            <div class="my-2 d-flex flex-row flex-wrap">
+                <div class="ms-md-4 me-md-2 mx-4 px-2">
                     <label for="posTitle" class="form-label my-1">Position/Title</label>
                     <input type="text" class="form-control" id="posTitle" name="posTitle" />
                 </div>
-            </div>
-
-            <!--Uni/org-->
-            <div class="container my-2">
-                <div class="mx-4 px-3">
+                <div class="ms-md-2 me-md-4 mx-4 px-2">
                     <label for="uniOrg" class="form-label my-1">University/Organization</label>
                     <input type="text" class="form-control" id="uniOrg" name="uniOrg" />
                 </div>
             </div>
 
             <!--Password-->
-            <div class="container my-2">
-                <div class="mx-4 px-3">
-                    <label for="pw" class="form-label my-1">Password*</label>
+            <div class="my-2 d-flex flex-row flex-wrap">
+                <div class="ms-md-4 me-md-2 mx-4 px-2">
+                    <label for="pw" class="form-label my-1">Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="pw" name="pw" required/>
                 </div>
-            </div>
-
-            <!--Confirm Password-->
-            <div class="container my-2">
-                <div class="mx-4 px-3">
-                    <label for="pwc" class="form-label my-1">Confirm Password*</label>
+                <div class="ms-md-2 me-md-4 mx-4 px-2">
+                    <label for="pwc" class="form-label my-1">Confirm Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="pwc" name="pwc" required/>
                 </div>
             </div>

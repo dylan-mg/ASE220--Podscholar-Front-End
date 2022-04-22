@@ -12,8 +12,7 @@ function bouncer() {
 
 function buttonLoader() {
     if (bouncer()) {
-        console.log("ping")
-            // ACCOUNT INFO
+        // ACCOUNT INFO
         console.log(window.location.pathname);
         if (window.location.pathname.slice(1) !== "/profile") {
             buttonMan("Profile", "bi-person-fill", `profile.html?ID=${sessionStorage.getItem("ID")}`, btnHoldingLad);
