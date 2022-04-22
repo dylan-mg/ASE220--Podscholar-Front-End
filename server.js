@@ -11,7 +11,7 @@ const { raw } = require('express');
 const app = express();
 
 // server constants
-const port = 5500;
+const port = 1337;
 
 // folder pathwats for easier data access
 const DATA_PATH = "./data";
