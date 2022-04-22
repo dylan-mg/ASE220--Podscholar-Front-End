@@ -7,8 +7,8 @@
     <link rel="icon" type="image/x-icon" href="../assets/PodScholars-removebg-preview.png" />
 
     <!--Bootstrap CSS-->
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/header.css" rel="stylesheet" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/header.css" rel="stylesheet" />
 
     <!--Bootstrap Icons-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
@@ -17,85 +17,74 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!--jquery hosted locally-->
-    <script src="../js/jquery-3.6.0.js"></script>
-    <script src="./js/header.js"></script>
+    <script src="/js/jquery-3.6.0.js"></script>
+    <script src="/js/header.js"></script>
 
     <title>Upload a podcast</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
-        <div class="d-flex w-100 justify-content-between">
-            <div class="ms-5 align-self-center">
-                <a class="navbar-brand header-Logo fs-1" href="index.html">PodScholar</a>
-            </div>
-            <div id="btnHoldingLad" class="btn-group d-flex flex-row justify-content-center p-0 m-0 h-100 me-lg-5">
-            </div>
-            <script>
-                buttonLoader()
-            </script>
-        </div>
-    </nav>
-    <main class="d-flex justify-content-center flex-column m-4 p-4">
-        <h5 class="text-center">Upload A Podcast</h5>
-        <div id="formHolder" class="d-flex justify-content-center mx-4 px-4">
-            <form id="uploadForm" class="container">
-                <ul class="list-unstyled d-flex flex-column">
-                    <li class="my-2">
-                        <label for="title">Title:</label>
-                        <input type="text" id="title" class="form-control" placeholder="Title" required>
-                    </li>
-                    <li class="my-2">
-                        <label for="journal">Journal:</label>
-                        <input type="text" id="journal" class="form-control" placeholder="journal" required>
-                    </li>
-                    <li class="my-2">
-                        <label for="authors">Authors:</label>
-                        <input type="text" id="authors" class="form-control" placeholder="authors" required>
-                    </li>
-                    <!--Category will be made into a select, temporarily a text field-->
-                    <li class="my-2">
-                        <label for="category">Category:</label>
-                        <input type="text" id="category" class="form-control" placeholder="category" required>
-                    </li>
-                    <!--tags is to be improved-->
-                    <li class="my-2">
-                        <label for="tags">Tags: (comma separated list)</label>
-                        <input type="text" id="tags" class="form-control" placeholder="this,is,a,tag,list" required>
-                    </li>
-                    <li class="my-2">
-                        <label for="pubDate">Published Date:</label>
-                        <input type="date" id="pubDate" class="form-control" placeholder="pubDate" required>
-                    </li>
-                    <li class="my-2">
-                        <label for="doi">DOI#:</label>
-                        <input type="text" id="doi" class="form-control" placeholder="DOI" required>
+    <%- include('./components/nav.html') %>
+        <main class="d-flex justify-content-center flex-column m-4 p-4">
+            <h5 class="text-center">Upload A Podcast</h5>
+            <div id="formHolder" class="d-flex justify-content-center mx-4 px-4">
+                <form id="uploadForm" class="container">
+                    <ul class="list-unstyled d-flex flex-column">
+                        <li class="my-2">
+                            <label for="title">Title:</label>
+                            <input type="text" id="title" class="form-control" placeholder="Title" required>
+                        </li>
+                        <li class="my-2">
+                            <label for="journal">Journal:</label>
+                            <input type="text" id="journal" class="form-control" placeholder="journal" required>
+                        </li>
+                        <li class="my-2">
+                            <label for="authors">Authors:</label>
+                            <input type="text" id="authors" class="form-control" placeholder="authors" required>
+                        </li>
+                        <!--Category will be made into a select, temporarily a text field-->
+                        <li class="my-2">
+                            <label for="category">Category:</label>
+                            <input type="text" id="category" class="form-control" placeholder="category" required>
+                        </li>
+                        <!--tags is to be improved-->
+                        <li class="my-2">
+                            <label for="tags">Tags: (comma separated list)</label>
+                            <input type="text" id="tags" class="form-control" placeholder="this,is,a,tag,list" required>
+                        </li>
+                        <li class="my-2">
+                            <label for="pubDate">Published Date:</label>
+                            <input type="date" id="pubDate" class="form-control" placeholder="pubDate" required>
+                        </li>
+                        <li class="my-2">
+                            <label for="doi">DOI#:</label>
+                            <input type="text" id="doi" class="form-control" placeholder="DOI" required>
 
-                    </li>
-                    <li class="my-2">
-                        <label for="file">File:</label>
-                        <input type="text" id="file" class="form-control" required>
-                        <small id="filedesc" class="form-text text-muted">Please upload an .mp3 file.</small>
-                    </li>
-                    <li class="my-2">
-                        <!--Terms and conditions-->
-                        <div class="form-check my-2">
-                            <input class="form-check-input" type="checkbox" value="" id="termsConds" name="termsConds" required>
-                            <label class="form-check-label" for="termsConds">
+                        </li>
+                        <li class="my-2">
+                            <label for="file">File:</label>
+                            <input type="text" id="file" class="form-control" required>
+                            <small id="filedesc" class="form-text text-muted">Please upload an .mp3 file.</small>
+                        </li>
+                        <li class="my-2">
+                            <!--Terms and conditions-->
+                            <div class="form-check my-2">
+                                <input class="form-check-input" type="checkbox" value="" id="termsConds" name="termsConds" required>
+                                <label class="form-check-label" for="termsConds">
                   Please Accept the Terms and Conditions
                 </label>
-                        </div>
-                    </li>
-                    <li class="text-center">
-                        <button type="submit" id="submitBtn" class="btn btn-outline-dark">Submit</button>
-                    </li>
-                </ul>
-            </form>
-        </div>
-        <div id="thanksMessage" class="visually-hidden">
-            Thank you for sharing your work with us!
-        </div>
-    </main>
+                            </div>
+                        </li>
+                        <li class="text-center">
+                            <button type="submit" id="submitBtn" class="btn btn-outline-dark">Submit</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div id="thanksMessage" class="visually-hidden">
+                Thank you for sharing your work with us!
+            </div>
+        </main>
 
 </body>
 

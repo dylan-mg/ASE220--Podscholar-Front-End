@@ -75,11 +75,9 @@ function emailCheck(formData) {
         data: JSON.stringify(sendData),
         success: (retdata) => {
             if (retdata.verified == 2) {
-                console.log("2");
                 emailTakenError.classList.remove("visually-hidden");
                 return false;
             } else if (retdata.verified == 1) {
-                console.log("object");
                 badEmailError.classList.remove("visually-hidden");
                 return false;
             } else {
@@ -99,7 +97,6 @@ function emailCheck(formData) {
 function verif(formData) {
     if (formData[5].value !== formData[6].value) {
         ifPWmatch.classList.remove("visually-hidden");
-        console.log("pw fail");
         return false;
     }
 
@@ -113,7 +110,6 @@ function verif(formData) {
     };
 
     if (emailCheck(dataFromForm) == false) {
-        console.log("email fail");
         return false;
     }
 
@@ -128,7 +124,7 @@ function verif(formData) {
         },
         success: (data) => {
             if (data.message) {
-                /* formMan.classList.add("visually-hidden");
+                formMan.classList.add("visually-hidden");
 
                 // show done message
                 doneMessage.classList.remove("visually-hidden");
@@ -140,11 +136,9 @@ function verif(formData) {
                 // redirect automatically
                 setTimeout(() => {
                     window.location.href = "/"
-                }, 15000); */
-                console.log("jkfdjkfd");
+                }, 10000);
                 return true;
             } else {
-                console.log("data");
                 alert("Please Resubmit your form");
                 return false;
             }

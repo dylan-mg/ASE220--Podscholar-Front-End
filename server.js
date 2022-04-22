@@ -215,4 +215,4 @@ app.get("/pages/:pageName", (req, res) => {
     } else {
         res.redirect("/");
     }
-})
+});

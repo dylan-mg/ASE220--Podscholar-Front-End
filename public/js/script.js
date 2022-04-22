@@ -12,7 +12,6 @@ function ajaxStuff(inurl) {
         },
         success: (podData) => {
             // First get podcast data
-            console.log(podData);
             loadcards(podData);
         }
     });
@@ -40,6 +39,8 @@ function populateCardSimple(cardData, newCard, podName) {
 
     // audio player
     newCard.querySelector(".card-audio").setAttribute("src", `/audio/${podName}.mp3`);
+
+
 }
 
 function populateCardLoops(cardData, newCard) {
@@ -92,7 +93,6 @@ function populateCardLoops(cardData, newCard) {
 }
 
 /**
- * 
  * @param {Array} cardData 
  * @param {HTMLElement} templateMan 
  * @param {HTMLElement} destination
@@ -107,7 +107,7 @@ function loadcard(cardData, templateMan, destination, num, podName) {
     destination.appendChild(newCardNode);
 
     let newCard = destination.querySelector(`#card-${num}`);
-
+    newCard.querySelector(".card-linkMan").href = `/pods/${podName}`;
     // populate the card
     populateCardSimple(cardData, newCard, podName);
     populateCardLoops(cardData, newCard);
@@ -130,7 +130,6 @@ function loadcards(podList) {
             },
             success: (podData) => {
                 // First get podcast data
-                console.log(i);
                 loadcard(podData, templateMan, desination, i, podList[i]);
             }
         });
