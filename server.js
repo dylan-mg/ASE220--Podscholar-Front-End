@@ -11,7 +11,7 @@ const { raw } = require('express');
 const app = express();
 
 // server constants
-const port = 1337;
+const port = 5500;
 
 // folder pathwats for easier data access
 const DATA_PATH = "./data";
@@ -32,9 +32,7 @@ const folder = "public";
 app.use(express.static(`${folder}`));
 
 // start server
-app.listen(port, function() {
-    console.log(`listening on ${port}`)
-});
+app.listen(process.env.PORT || port);
 
 app.get("/", (req, res) => {
     res.render("index.ejs")
