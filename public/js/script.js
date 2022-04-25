@@ -32,11 +32,6 @@ function populateCardSimple(cardData, newCard, podName) {
     // saves
     newCard.querySelector(".bi-bookmark").append(cardData.saves);
 
-    if (sessionStorage.getItem("auth") == "true") {
-        newCard.querySelector(".card-lbtn").classList.remove("disabled");
-        newCard.querySelector(".card-sbtn").classList.remove("disabled");
-    }
-
     // audio player
     newCard.querySelector(".card-audio").setAttribute("src", `/audio/${podName}.mp3`);
 
@@ -115,9 +110,24 @@ function loadcard(cardData, templateMan, destination, num, podName) {
 }
 
 function loadcards(podList) {
-    // Loads all cards
     let templateMan = document.getElementById("card-t");
+    if (navigator.userAgent.match(/firefox|fxios/i)) {
+        templateMan.querySelector(".card-footer-btn").classList.add("card-footer-btn-firefox");
+        templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-transparent");
+        templateMan.querySelector(".bi-bookmark").classList.add("bg-transparent");
+        console.log(templateMan.querySelector(".bi-hand-thumbs-up"));
+    } else {
+        templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-dark");
+        templateMan.querySelector(".bi-bookmark").classList.add("bg-dark");
+    }
+
+    if (sessionStorage.getItem("auth") == "true") {
+        templateMan.querySelector(".card-lbtn").classList.remove("disabled");
+        templateMan.querySelector(".card-sbtn").classList.remove("disabled");
+    }
+    // Loads all cards
     let desination = document.getElementById("cards-here");
+
     for (let i = 0; i < podList.length; i++) {
         $.ajax({
             type: "GET",

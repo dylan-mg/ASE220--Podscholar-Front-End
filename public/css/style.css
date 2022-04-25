@@ -3,3 +3,11 @@ h3 {
     font-family: "Aleo", Serif;
     font-weight: 700 !important
 }
+
+.btn-yellow {
+    background-color: #ffcd39;
+}
+
+.btn-yellow:hover {
+    background-color: #dbb132;
+}

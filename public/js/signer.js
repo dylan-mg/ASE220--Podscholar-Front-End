@@ -30,10 +30,9 @@ function signIn(e) {
         },
         success: (failData) => {
             console.log(failData);
-            if (failData.verStat) {
+            if (failData.id) {
                 window.sessionStorage.setItem("username", failData.id);
                 window.sessionStorage.setItem("auth", failData.verStat);
-                window.sessionStorage.setItem("role", failData.role);
                 console.log(window.sessionStorage);
                 window.location.href = "/";
             } else {

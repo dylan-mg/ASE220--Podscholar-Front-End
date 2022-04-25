@@ -24,6 +24,10 @@
     background-color: #f1f3f4;
 }
 
+.card-footer-btn-firefox {
+    background-color: rgba(26, 26, 26, .8);
+}
+
 .card-TitleMan {
     font-family: "Aleo", Serif;
     font-weight: 700;

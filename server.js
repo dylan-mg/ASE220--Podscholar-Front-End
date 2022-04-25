@@ -3,11 +3,9 @@
 const bodyParser = require('body-parser');
 const fileHelpers = require('./modules/fileHelpers.js');
 const authHelper = require('./modules/authHelper.js');
-const cryptoMan = require('crypto');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
-const { raw } = require('express');
 const app = express();
 
 // server constants
@@ -141,14 +139,14 @@ app.post("/sign/in", (req, res) => {
                     let userData = JSON.parse(uData.toString());
                     if (req.body.password == userData.password) {
                         req.session.user = {
-                            ID: userData.userName,
+                            id: userName,
                             fName: userData.fName,
                             lName: userData.lName,
                             role: userData.role
                         };
                         res.send({
                             verStat: true,
-                            id: userData.userName
+                            id: userName
                         });
                     } else {
                         res.send({ verStat: false });
@@ -215,4 +213,23 @@ app.get("/pages/:pageName", (req, res) => {
     } else {
         res.redirect("/");
     }
+});
+
+app.get('/api/buttons', (req, res) => {
+    console.log(req.session);
+    res.send({ test: "received" });
+})
+
+app.get('/podcasts/create', (req, res) => {
+    fs.readFile(`${JSON_PATH}/disciplines.json`, (er, data) => {
+        if (er) { console.log(er); } else {
+            data = JSON.parse(data.toString());
+            res.render("upload.ejs", { categs: data });
+        }
+    });
+});
+
+app.post('/podcasts/create', (req, res) => {
+    console.table(req.body);
+    res.redirect(req.url);
 });

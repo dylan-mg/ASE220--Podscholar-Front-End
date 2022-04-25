@@ -14,15 +14,17 @@
             </div>
             <div class="px-2 my-0 card-text small text-muted card-pubDate"></div>
             <div>
-                <div class="d-flex flex-row mb-2 card-tag-container">
+                <div class="d-flex flex-row flex-wrap mb-2 card-tag-container">
                     <a class="text-decoration-none ms-1 card-link" hidden href=""><span class="badge rounded-pill bi bi-tag card-tag"> </span></a>
                 </div>
             </div>
         </div>
     </a>
-    <div class="card-footer p-0 m-0 d-flex flex-row">
-        <audio controls preload="none" src="" class="flex-grow-1 m-0 p-0 card-audio"></audio>
-        <button type="button" class="btn disabled card-lbtn"><span class="badge bg-dark bi bi-hand-thumbs-up m-0"> </span></button>
-        <button type="button" class="btn disabled card-sbtn"><span class="badge bg-dark bi bi-bookmark m-0"> </span></button>
+    <div class="card-footer p-0 m-0 d-flex flex-column flex-md-row flex-wrap flex-md-nowrap">
+        <audio controls preload="none" src="" class="flex-grow-1 m-0 p-0 card-audio w-100"></audio>
+        <div class="p-0 m-0 d-flex d-md-inline-flex justify-content-between card-footer-btn">
+            <button type="button" class="btn disabled card-lbtn"><span class="badge bi bi-hand-thumbs-up m-0"> </span></button>
+            <button type="button" class="btn disabled card-sbtn"><span class="badge bi bi-bookmark m-0"> </span></button>
+        </div>
     </div>
 </div>

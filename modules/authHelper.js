@@ -5,10 +5,7 @@ const session = require('express-session');
 const app = express();
 
 function redirector(res) {
-    fs.readFile('redirect.html', function(err, data) {
-        res.status(307);
-        res.send(data.toString());
-    });
+    res.redirect("/");
 }
 
 //placeholder setup for profile page later
@@ -48,7 +45,6 @@ function adminCheck(req, res, next) {
 function emailHelper(reqEmail, emails) {
     for (let email in emails) {
         if (email.toLowerCase() == reqEmail.toLowerCase()) {
-            console.log("beed");
             return false;
         }
     }
@@ -81,7 +77,6 @@ function emailCheck(reqStuff, res) {
             return 2;
         }
     } else {
-        console.log("asdf");
         res.send({
             verified: 1,
             returnStatus: MESSAGES.failedRegEX
