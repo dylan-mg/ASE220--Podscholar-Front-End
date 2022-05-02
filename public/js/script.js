@@ -102,7 +102,7 @@ function loadcard(cardData, templateMan, destination, num, podName) {
     destination.appendChild(newCardNode);
 
     let newCard = destination.querySelector(`#card-${num}`);
-    newCard.querySelector(".card-linkMan").href = `/pods/${podName}`;
+    $(".card-linkMan", newCard).attr("href", `/pods/${cardData._id}`);
     // populate the card
     populateCardSimple(cardData, newCard, podName);
     populateCardLoops(cardData, newCard);
@@ -111,6 +111,7 @@ function loadcard(cardData, templateMan, destination, num, podName) {
 
 function loadcards(podList) {
     let templateMan = document.getElementById("card-t");
+
     if (navigator.userAgent.match(/firefox|fxios/i)) {
         templateMan.querySelector(".card-footer-btn").classList.add("card-footer-btn-firefox");
         templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-transparent");
@@ -125,6 +126,7 @@ function loadcards(podList) {
         templateMan.querySelector(".card-lbtn").classList.remove("disabled");
         templateMan.querySelector(".card-sbtn").classList.remove("disabled");
     }
+
     // Loads all cards
     let desination = document.getElementById("cards-here");
 

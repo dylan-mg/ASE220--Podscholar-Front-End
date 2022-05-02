@@ -1,12 +1,21 @@
-// ! Use "nodemon ./server.js" to run this server. Nodemon will automatically reload server whenever server.js is saved
-// require all npm packages
-const bodyParser = require('body-parser');
+// ! type "serve" to run this server. Serve.bat launches nodemon with this server
+// if there's any environmental stuff, include the module
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
+// original models
 const fileHelpers = require('./modules/fileHelpers.js');
 const authHelper = require('./modules/authHelper.js');
+const vh = require('./modules/verifyHelper.js');
+
+// require all npm packages
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 const app = express();
+
 
 // server constants
 const port = 5500;
@@ -32,10 +41,17 @@ app.use(express.static(`${folder}`));
 // start server
 app.listen(process.env.PORT || port);
 
+// DOOR [ / ]
+// Main Index Page
+// * GET
 app.get("/", (req, res) => {
-    res.render("index.ejs")
+    console.log(req.url);
+    res.render("index.ejs");
 });
 
+// DOOR [ /api/pods ]
+// Gets info on the 10 newest podcast episodes
+// * GET
 app.get("/api/pods/newest", (req, res) => {
     // designate response type
     res.contentType("application/json");
@@ -58,7 +74,7 @@ app.get("/api/pods/newest", (req, res) => {
         // if there's an error, 
         if (err) {
             // ...call error handler function
-            fileHelpers.errorMan(err.errno, res, req.params.fileName);
+            fileHelpers.errorMan(err.errno, res, req.url);
         } else {
             // otherwise, send the parsed data and an OK signal
             res.status(200);
@@ -67,6 +83,8 @@ app.get("/api/pods/newest", (req, res) => {
     });
 });
 
+// DOOR [ /api/pods/data/:fileName ]
+// *GET
 app.get("/api/pods/data/:fileName", (req, res) => {
     // designate response type
     res.contentType("application/json");
@@ -78,7 +96,7 @@ app.get("/api/pods/data/:fileName", (req, res) => {
             // if there's an error, 
             if (err) {
                 // ...call error handler function
-                fileHelpers.errorMan(err.errno, res, req.params.fileName);
+                fileHelpers.errorMan(err.errno, res, req.url);
             } else {
                 // otherwise, send the parsed data and an OK signal
                 res.status(200);
@@ -86,17 +104,20 @@ app.get("/api/pods/data/:fileName", (req, res) => {
             }
         });
     } else {
-        fileHelpers.errorMan(404, res, req.params.fileName);
+        fileHelpers.errorMan(404, res, req.url);
     }
 });
 
+// DOOR [ /api/users/:fileName ]
+// * GET
+// gets and returns a users info. User's info should be formatted as firstName-lastName
 app.get("/api/users/:fileName", (req, res) => {
     // designate response type
     res.contentType("application/json");
     let regMan = /[a-zA-Z-]+-[a-zA-Z-]+/i;
     // must be of [first-last format]
     if (regMan.test(req.params.fileName)) {
-        fileHelpers.errorMan(401, res, req.params.fileName);
+        fileHelpers.errorMan(401, res, req.url);
     } else {
         let fileName = `${USER_PATH}/${req.params.fileName}.json`;
 
@@ -105,7 +126,7 @@ app.get("/api/users/:fileName", (req, res) => {
             // if there's an error, 
             if (err) {
                 // ...call error handler function
-                fileHelpers.errorMan(err.errno, res, req.params.fileName);
+                fileHelpers.errorMan(err.errno, res, req.url);
             } else {
                 // otherwise, send the parsed data and an OK signal
                 res.status(200);
@@ -116,15 +137,24 @@ app.get("/api/users/:fileName", (req, res) => {
 
 });
 
+// DOOR [ /sign/out ]
+// * GET
+// Signs a user out, destroys the session, redirects
 app.get("/sign/out", (req, res) => {
+    console.log(req.url);
     req.session.destroy();
     res.render("./auth/out.ejs");
 });
 
+// DOOR [ /sign/in ]
+// * GET
+// renders the sign in form
 app.get("/sign/in", (req, res) => {
     res.render("./auth/in.ejs");
 });
 
+// * POST
+// checks if a user can be signed in, if so, signs them in
 app.post("/sign/in", (req, res) => {
     /* {email, password} */
     // check if email exists
@@ -159,18 +189,15 @@ app.post("/sign/in", (req, res) => {
     // if either doesn't, respond with error
 });
 
+// DOOR [ /sign/up ]
+// * GET
+// renders sign up page
 app.get("/sign/up", (req, res) => {
     res.render("./auth/up.ejs");
-})
-
-app.post("/sign/up/email", (req, res) => {
-    let echeck = authHelper.emailCheck(req.body, res);
-    if (echeck == 0) {
-        console.log("success");
-        res.send({ verified: 0 });
-    }
 });
 
+// * POST
+// Verifies email, creates new entry, updates relevant file
 app.post("/sign/up", (req, res) => {
     let echeck = authHelper.emailCheck(req.body, res);
 
@@ -205,6 +232,21 @@ app.post("/sign/up", (req, res) => {
     }
 });
 
+// DOOR [ /sign/up/email ]
+// * POST
+// verifies the email, returns value if success
+app.post("/sign/up/email", (req, res) => {
+    let echeck = authHelper.emailCheck(req.body, res);
+    if (echeck == 0) {
+        console.log("success");
+        res.send({ verified: 0 });
+    }
+    // todo add else
+});
+
+// DOOR [ /pages/:pageName ]
+// * GET
+// Loader for static pages [About us, Podcast rules, etc]
 app.get("/pages/:pageName", (req, res) => {
     const viewsPath = "./views/pages";
     let fileName = req.params.pageName;
@@ -215,21 +257,55 @@ app.get("/pages/:pageName", (req, res) => {
     }
 });
 
+// DOOR [ /api/buttons ]
+// * GET
+// todo Send buttons html for navbar
 app.get('/api/buttons', (req, res) => {
-    console.log(req.session);
-    res.send({ test: "received" });
-})
+    let fileName = "nav-btn-all";
+    if (req.session.user) {
+        fileName = "nav-btn-users";
+    }
+    fs.readFile(`./views/components/${fileName}.html`, (er, dat) => {
+        if (er)
+            console.table(dat.toString());
+    });
+    res.json({ test: "received" });
+});
 
+// DOOR [ /podcasts/create ]
+// * GET
+// Upload page for podcasts
 app.get('/podcasts/create', (req, res) => {
     fs.readFile(`${JSON_PATH}/disciplines.json`, (er, data) => {
-        if (er) { console.log(er); } else {
+        if (er) {
+            console.log(er);
+            res.redirect("/");
+        } else {
             data = JSON.parse(data.toString());
             res.render("upload.ejs", { categs: data });
         }
     });
 });
 
+// * POST
+// creates a new podcast, in future will be multipart/form, for now,
 app.post('/podcasts/create', (req, res) => {
+    console.log();
+    setTimeout(() => {
+        res.json({ destination: "/" });
+    }, 404);
+});
+
+// DOOR [ /api/formInfo/:field/check ]
+// * POST
+// todo Verifies the designated form data
+app.post("/api/formInfo/:field/check", (req, res) => {
     console.table(req.body);
-    res.redirect(req.url);
+    // todo to tested later, for now, just ret true
+    /* if (req.params.field == doi) {
+        vh.doiVerifier(req.body.doi);
+    } else if (req.params.field == email) {
+        vh.emailVerifier(req.body.email);
+    } */
+    res.json({ message: true });
 });
