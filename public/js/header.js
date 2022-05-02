@@ -24,8 +24,8 @@ function buttonLoader() {
     if (bouncer()) {
         // ACCOUNT INFO
         console.log(window.location.pathname);
-        if (window.location.pathname.slice(1) !== "/profile") {
-            buttonMan("Profile", "bi-person-fill", `profile.html?ID=${sessionStorage.getItem("ID")}`, btnHoldingLad);
+        if (window.location.pathname.slice(1) !== `/profile/${sessionStorage.getItem("username")}`) {
+            buttonMan("Profile", "bi-person-fill", `/profile/${sessionStorage.getItem("username")}`, btnHoldingLad);
         } else {
             buttonMan("Saved", "bi-bookmark-fill", `/saved`, btnHoldingLad);
         }
