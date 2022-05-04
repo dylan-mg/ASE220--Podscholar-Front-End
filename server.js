@@ -31,7 +31,7 @@ app.use(bodyParser.json()); // for parsing json reqs
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing non-query data from url
 app.set('view engine', 'ejs');
 
-app.use(session({ secret: 'The Ceaseless Watcher is Present' }));
+app.use(session({ secret: process.env.servSecret }));
 
 // all json, css, images, etc is served from here
 // if it is used on the client side, it's gotten from this folder by express
@@ -42,16 +42,16 @@ app.use(express.static(`${folder}`));
 app.listen(process.env.PORT || port);
 
 // DOOR [ / ]
-// Main Index Page
 // * GET
+// Main Index Page
 app.get("/", (req, res) => {
     console.log(req.url);
     res.render("index.ejs");
 });
 
 // DOOR [ /api/pods ]
-// Gets info on the 10 newest podcast episodes
 // * GET
+// Gets info on the 10 newest podcast episodes
 app.get("/api/pods/newest", (req, res) => {
     // designate response type
     res.contentType("application/json");
