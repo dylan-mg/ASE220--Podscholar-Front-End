@@ -1,130 +1,205 @@
 const express = require('express');
-const app = express();
+const router = express.router();
+const mongo = require('mongodb');
+const username='quentin' // username for mongoDB
+const password='quentin' // password for mongoDB
+const clusterName='pods' // name of cluster for mongoDB
+const dbName='pods' // name of database for mongoDB
+const URL = `mongodb://${username}:${password}@cluster0.ut1nc.mongodb.net/${clusterName}?retryWrites=true&w=majority`
+const mongoClient = mongo.MongoClient;
+var db;
+mongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err){
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+    }
+    catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
 
+})
 /* Web Routes */
 /* Static Pages */
-app.get('/pages/:page-name', function (req, res) {
+router.get('/pages/:page-name', function (req, res) {
 })
 /* Home Page (not logged in) */
-app.get('/',(req, res)=>{    
+router.get('/',(req, res)=>{    
 })
 /* Home Page (logged in) */
-app.get('/',(req, res)=>{    
+router.get('/',(req, res)=>{    
 })
 /* Scientific discipline index page */
-app.get('/categories',(req, res)=>{    
+router.get('/categories',(req, res)=>{ 
+    db.collection('categories').find().toArray(function(err, result) {
+        if (err){ console.log('Error finding categories');
+             throw err;}
+        res.send(result);
+    })   
 })
 /* Scientific discipline detail page */
-app.get('/categories/:scientific-discipline',(req, res)=>{    
+router.get('/categories/:scientific-discipline',(req, res)=>{ 
+    discipline = req.params.scientific-discipline;
+    db.collection('categories').findOne({name: discipline}, function(err, result) {
+        if (err){ console.log('Error finding categories');
+             throw err;}
+        res.send(result);
+    })  
 })
 /* Tags index page */
-app.get('/keywords',(req, res)=>{
+router.get('/keywords',(req, res)=>{
 })
 /*Tag page*/
-app.get('/keywords/:tag',(req, res)=>{
+router.get('/keywords/:tag',(req, res)=>{
 })
 /* Podcast page */
-app.get('/podcasts/:podcast-title',(req, res)=>{
+router.get('/podcasts/:podcast-title',(req, res)=>{
 })
 /* Authentication */
-app.get('/auth',(req, res)=>{
+router.get('/auth',(req, res)=>{
 })
 /*Author account approval */
-app.get('/authors/create',(req, res)=>{
+router.get('/authors/create',(req, res)=>{
 })
 /*User/author profile */
-app.get('/users/:first-name-last-name',(req, res)=>{
+router.get('/users/:first-name-last-name',(req, res)=>{
 })
 /* User/author account */
-app.get('/account',(req, res)=>{
+router.get('/account',(req, res)=>{
 })
 /* Edit/change personal information */
-app.get('/account/details',(req, res)=>{
+router.get('/account/details',(req, res)=>{
 })
 /*Edit/change account information*/
-app.get('/acount/settings',(req, res)=>{
+router.get('/acount/settings',(req, res)=>{
 })
 /*Authored podcasts*/
-app.get('/users/:first-name-last-name/podcasts/authored',(req, res)=>{
+router.get('/users/:first-name-last-name/podcasts/authored',(req, res)=>{
 })
 /*podcasts*/
-app.get('/users/:first-name-last-name/podcasts/saved',(req, res)=>{
+router.get('/users/:first-name-last-name/podcasts/saved',(req, res)=>{
 })
 /* Podcast upload page */
-app.get('/podcasts/create',(req, res)=>{
+router.get('/podcasts/create',(req, res)=>{
 })
 /* Podcast edit page */
-app.get('/podcasts/:podcast-title/edit',(req, res)=>{
+router.get('/podcasts/:podcast-title/edit',(req, res)=>{
 })
 
 
 /* API routes */
 /* Home Page (not logged in) */
-app.get('/api', function (req, res) {  
+router.get('/api', function (req, res) {  
 })
-app.get('/api/search/keyword/:keyword', function (req, res) {
+router.get('/api/search/keyword/:keyword', function (req, res) {
 })
-app.get('/api/search/date/:date', function (req, res) {    
+router.get('/api/search/date/:date', function (req, res) {    
 })
 /* Home page (logged in) */
-app.get('/api', function (req, res) {    
+router.get('/api', function (req, res) {    
 })
-app.get('/api/search/keyword/:keyword', function (req, res) {    
+router.get('/api/search/keyword/:keyword', function (req, res) { 
+    var returnlist = [];
+    var keyword = req.params.keyword;
+    keyword = keyword.split('-');
+    var dblist = []
+    db.collection('podcasts').find({$or: [{tags: {$in: keyword}}, {title: {$regex: keyword[0], $options: 'i'}}]}).toArray(function(err, result) {
+        if (err){
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        dblist = result;
+    })
+    keyword.forEach(element => {
+        if(element in dblist){
+            returnlist.push(element);
+        }
+    });  
+    res.send(returnlist); 
 })
-app.get('/api/search/date/:date', function (req, res) {    
+router.get('/api/search/date/:date', function (req, res) {  
+    var date = req.params.date;
+    var dblist = [];
+    db.collection('podcasts').find({date: date}).toArray(function(err, result) {
+        if (err){
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        dblist = result;
+    })  
+    res.send(dblist);
 })
 /* Scientific discipline index page */
-app.get('/api/categories', function (req, res) {    
+router.get('/api/categories', function (req, res) {    
 })
 /* Scientific discipline detail page */
-app.get('/api/categories/:scientific-discipline', function (req, res) {    
+router.get('/api/categories/:scientific-discipline', function (req, res) {    
 })
-app.get('/api/categories/:scientific-discipline/search/keyword/:keyword', function (req, res) {    
+router.get('/api/categories/:scientific-discipline/search/keyword/:keyword', function (req, res) {    
 })
-app.get('/api/categories/:scientific-discipline/search/date/:date', function (req, res) {    
+router.get('/api/categories/:scientific-discipline/search/date/:date', function (req, res) {    
 })
 /* Tags index page */
-app.get('/api/keywords', function (req, res) {    
+router.get('/api/keywords', function (req, res) {    
 })
 /* Tage page */
-app.get('/api/keywords/:keyword', function (req, res) {    
+router.get('/api/keywords/:keyword', function (req, res) {    
 })
-app.get('/api/keywords/:keyword/search/date/:date', function (req, res) {    
+router.get('/api/keywords/:keyword/search/date/:date', function (req, res) {    
 })
 /* Podcast Page */
-app.post('/api/podcasts', function (req, res) {    
+router.post('/api/podcasts', function (req, res) {    
 })
-app.get('/api/podcasts/:podcast-title', function (req, res) {    
+router.get('/api/podcasts/:podcast-title', function (req, res) {    
 })
-app.patch('/api/podcasts/:podcast-title', function (req, res) {    
+router.patch('/api/podcasts/:podcast-title', function (req, res) {    
 })
-app.delete('/api/podcasts/:podcast-title', function (req, res) {    
+router.delete('/api/podcasts/:podcast-title', function (req, res) {    
 })
-app.patch('/api/podcasts/:podcast-title/actions/subscribe', function (req, res) {    
+router.patch('/api/podcasts/:podcast-title/actions/subscribe', function (req, res) {    
 })
-app.patch('/api/podcasts/:podcast-title/actions/like', function (req, res) {    
+router.patch('/api/podcasts/:podcast-title/actions/like', function (req, res) {    
 })
-app.get('/api/podcasts/:podcast-title/comments', function (req, res) {    
+router.get('/api/podcasts/:podcast-title/comments', function (req, res) {    
 })
 /* Authentication */
-app.post('/api/auth/signup', function (req, res) {    
+router.post('/api/auth/signup', function (req, res) {  
+    var user = req.body;
+    db.collection('users').insertOne(user, function(err, result) {
+        if (err){
+            console.log('Error inserting user');
+            throw err;
+        }
+        res.send('User created');
+    })
 })
-app.post('/api/auth/signin', function (req, res) {    
+router.post('/api/auth/signin', function (req, res) {  
+    var user = req.body;
+    db.collection('users').findOne(user, function(err, result) {
+        if (err){
+            console.log('Error finding user');
+            throw err;
+        }
+        res.send(result);
+    })
 })
 /* Author account approval */
-app.post('/api/authors', function(req, res) {
+router.post('/api/authors', function(req, res) {
 })
 /* User/author profile */
-app.get('/api/users/:first-name-last-name', function (req, res) {    
+router.get('/api/users/:first-name-last-name', function (req, res) {    
 })
-app.post('/api/users/:first-name-last-name/actions/follow', function (req, res) {    
+router.post('/api/users/:first-name-last-name/actions/follow', function (req, res) {    
 })
-app.get('/api/users/:first-name-last-name/podcasts/authored', function (req, res) {    
+router.get('/api/users/:first-name-last-name/podcasts/authored', function (req, res) {    
 })
-app.get('/api/users/:first-name-last-name/podcasts/saves', function (req, res) {    
+router.get('/api/users/:first-name-last-name/podcasts/saves', function (req, res) {    
 })
 /* User/author account */
-app.get('/api/account', function (req, res) {    
+router.get('/api/account', function (req, res) {    
 })
-app.patch('/api/account', function (req, res) {    
+router.patch('/api/account', function (req, res) {    
 })
