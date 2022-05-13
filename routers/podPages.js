@@ -1,0 +1,45 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
+const express = require('express')
+const router = express.Router()
+const fs = require('fs')
+
+const BIBTEX_PATH = process.env.BIBTEX_PATH;
+const JSON_PATH = process.env.JSON_PATH;
+const POD_PATH = process.env.POD_PATH;
+const PORT = 1337
+
+// DOOR [ /podcasts/:id ]
+// * GET
+// Loads the page for a given podcast, if it exists
+router.get("/:id", (req, res) => {
+
+});
+
+// DOOR [ /podcasts/create ]
+// * GET
+// Upload page for podcasts
+router.get('/create', (req, res) => {
+    fs.readFile(`${JSON_PATH}/disciplines.json`, (er, data) => {
+        if (er) {
+            console.log(er);
+            res.redirect("/");
+        } else {
+            data = JSON.parse(data.toString());
+            res.render("upload.ejs", { categs: data });
+        }
+    });
+});
+
+// * POST
+// creates a new podcast, in future will be multipart/form, for now,
+router.post('/create', (req, res) => {
+    console.log();
+    setTimeout(() => {
+        res.json({ destination: "/" });
+    }, 404);
+});
+
+module.exports = router
