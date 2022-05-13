@@ -14,7 +14,7 @@ const PORT = 1337
 // DOOR [ /podcasts/:id ]
 // * GET
 // Loads the page for a given podcast, if it exists
-app.get("/:id", (req, res) => {
+router.get("/:id", (req, res) => {
 
 });
 
