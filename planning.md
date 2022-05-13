@@ -22,6 +22,15 @@
   - same as /
 ### /podcasts/:podTitle
   - info on pod
+  [] Title
+  [] abstract
+  [] authors
+  [] details on manuscript
+  [] link to manuscript
+  [] doi (if present)
+  [] audio
+  [] like count/bm count
+  [] like count and option
   - similar feed*
   - user comments
 ### /podcasts/create
@@ -45,16 +54,6 @@ JSON: Title, Tags, Description
   - query string is used to search
     - *?terms=fdfdf*
       - if we want to go nuts, advanced search could be useful
-
-## /sign
-  - if signed in, redirects to home, if not, redirects to sign in
-### /sign/up
-  - Email/PW
-    - optional f/lname, scidisc, tags, pfp
-### /sign/in
-  - Email/PW
-### /sign/out
-  - may or may not exist
 
 
 ## /auth/

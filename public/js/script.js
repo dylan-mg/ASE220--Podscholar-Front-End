@@ -133,7 +133,7 @@ function loadcards(podList) {
     for (let i = 0; i < podList.length; i++) {
         $.ajax({
             type: "GET",
-            url: `/api/pods/data/${podList[i]}`,
+            url: `/api/podcasts/data/${podList[i]}`,
             contentType: "application/json",
             error: (xhr, status) => {
                 console.log(xhr);
