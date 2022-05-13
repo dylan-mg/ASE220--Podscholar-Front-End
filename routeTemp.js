@@ -335,7 +335,7 @@ router.get('/api/podcasts/:podcast-title/comments', function (req, res) {
 })
 /* Authentication */
 router.post('/api/auth/signup', function (req, res) {
-    var user = req.body;
+    var user = JSON.stringify(req.body);
     db.collection('users').insertOne(user, function (err, result) {
         if (err) {
             console.log('Error inserting user');
