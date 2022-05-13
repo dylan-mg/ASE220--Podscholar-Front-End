@@ -14,9 +14,9 @@ const PORT = 1337
 // DOOR [ /podcasts/:id ]
 // * GET
 // Loads the page for a given podcast, if it exists
-router.get('/podcasts/:podcast_title', (req, res) => {
+router.get('/:podcast_title', (req, res) => {
     var title = req.params.podcast_title;
-    db.collection('podcasts').findOne({ title: title }, function (err, result) {
+    db.collection('podcasts').findOne({ title: title }, function(err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;

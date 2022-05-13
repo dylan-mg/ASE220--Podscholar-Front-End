@@ -131,7 +131,24 @@ function loadcards(podList) {
     let desination = document.getElementById("cards-here");
 
     for (let i = 0; i < podList.length; i++) {
+<<<<<<< HEAD
         loadcard(podList[i], templateMan, desination, i);
+=======
+        $.ajax({
+            type: "GET",
+            url: `/api/podcasts/data/${podList[i]}`,
+            contentType: "application/json",
+            error: (xhr, status) => {
+                console.log(xhr);
+                console.log(status);
+                //alert("Cannot Access Data at this time. Please Try again later");
+            },
+            success: (podData) => {
+                // First get podcast data
+                loadcard(podData, templateMan, desination, i, podList[i]);
+            }
+        });
+>>>>>>> 9652831 (Temp Commit)
     }
 }
 /*
