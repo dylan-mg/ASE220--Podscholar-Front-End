@@ -46,16 +46,6 @@ JSON: Title, Tags, Description
     - *?terms=fdfdf*
       - if we want to go nuts, advanced search could be useful
 
-## /sign
-  - if signed in, redirects to home, if not, redirects to sign in
-### /sign/up
-  - Email/PW
-    - optional f/lname, scidisc, tags, pfp
-### /sign/in
-  - Email/PW
-### /sign/out
-  - may or may not exist
-
 
 ## /auth/
   - ajax authentication on the fly for element generation

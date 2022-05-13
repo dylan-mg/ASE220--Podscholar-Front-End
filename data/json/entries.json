@@ -1,0 +1,101 @@
+[
+    {
+        "Title": "The Large Area Telescope on the Fermi Gamma-Ray Space Telescope Mission",
+        "Authors": [{
+            "name": "Atwood, W.B.",
+            "email": "atwoodwb@gmail.com"
+        },
+        {
+            "name": "Bisello, D.",
+            "email": "dbisello@mit.edu"
+        }
+        ],
+        "Description": "The Large Area Telescope (Fermi/LAT, hereafter LAT), the primary instrument on the Fermi Gamma-ray Space Telescope (Fermi) mission, is an imaging, wide field-of-view (FoV), high-energy γ-ray telescope, covering the energy range from below 20 MeV to more than 300 GeV. The LAT was built by an international collaboration with contributions from space agencies, high-energy particle physics institutes, and universities in France, Italy, Japan, Sweden, and the United States. This paper describes the LAT, its preflight expected performance, and summarizes the key science objectives that will be addressed.",
+        "DOI": "10.2486/7925.85.4.6135",
+        "manuscriptURL": "https://ui.adsabs.harvard.edu/abs/2009ApJ...697.1071A/abstract",
+        "disciplines": ["Physics", "Light Spectrometry"],
+        "Tags": ["light", "telescope", "gamma-ray", "space"],
+        "likes": 85,
+        "saves": 201
+    },
+    {
+        "Title": "Cancer survival in five continents: a worldwide population-based study",
+        "Authors": [{
+            "name": "Coleman, P",
+            "email": "colemanp@gmail.com"
+        },
+        {
+            "name": "Spinello, D",
+            "email": "dspinello@harvard.edu"
+        },
+        {
+            "name": "Quaresma, M",
+            "email": "manuelaq@nku.edu"
+        }
+        ],
+        "Description": "Cancer survival varies widely between countries. The CONCORD study provides survival estimates for 1·9 million adults (aged 15–99 years) diagnosed with a first, primary, invasive cancer of the breast (women), colon, rectum, or prostate during 1990–94 and followed up to 1999, by use of individual tumour records from 101 population-based cancer registries in 31 countries on five continents. This is, to our knowledge, the first worldwide analysis of cancer survival, with standard quality-control procedures and identical analytic methods for all datasets.",
+        "DOI": "70.1469/6627.11.9.2452",
+        "manuscriptURL": "https://www.sciencedirect.com/science/article/pii/S1470204508701797",
+        "disciplines": ["Science", "Oncology"],
+        "Tags": ["cancer", "tumour", "survival"],
+        "likes": 104,
+        "saves": 65
+    },
+    {
+        "Title": "Evaluation of the Main MPPT Techniques for Photovoltaic Applications",
+        "Authors": [{
+            "name": "Galotto, L",
+            "email": "luigigalotto@gmail.com"
+        },
+        {
+            "name": "Sampaio",
+            "email": "leonardosmp1@saopaulo.edu"
+        }
+        ],
+        "Description": "This paper presents evaluations among the most usual maximum power point tracking (MPPT) techniques, doing meaningful comparisons with respect to the amount of energy extracted from the photovoltaic (PV) panel [tracking factor (TF)] in relation to the available power, PV voltage ripple, dynamic response, and use of sensors. Using MatLab/Simulink and dSPACE platforms, a digitally controlled boost dc-dc converter was implemented and connected to an Agilent Solar Array E4350B simulator in order to verify the analytical procedures. The main experimental results are presented for conventional MPPT algorithms and improved MPPT algorithms named IC based on proportional-integral (PI) and perturb and observe based on PI. Moreover, the dynamic response and the TF are also evaluated using a user-friendly interface, which is capable of online program power profiles and computes the TF. Finally, a typical daily insulation is used in order to verify the experimental results for the main PV MPPT methods.",
+        "DOI": "52.7764/1231.5804.4.2648",
+        "manuscriptURL": "https://ieeexplore.ieee.org/abstract/document/6196220",
+        "disciplines": ["Electronic Engineering"],
+        "Tags": ["photovoltaic", "industrial", "tracking"],
+        "likes": 300,
+        "saves": 924
+    },
+    {
+        "Title": "A Randomized Trial of Intraarterial Treatment for Acute Ischemic Stroke",
+        "Authors": [{
+            "name": "Berkhemer, O",
+            "email": "berkhemer1@gmail.com"
+        },
+        {
+            "name": "Fransen, P",
+            "email": "fransenp@harvard.edu"
+        }
+        ],
+        "Description": "We randomly assigned eligible patients to either intraarterial treatment plus usual care or usual care alone. Eligible patients had a proximal arterial occlusion in the anterior cerebral circulation that was confirmed on vessel imaging and that could be treated intraarterially within 6 hours after symptom onset. The primary outcome was the modified Rankin scale score at 90 days; this categorical scale measures functional outcome, with scores ranging from 0 (no symptoms) to 6 (death). The treatment effect was estimated with ordinal logistic regression as a common odds ratio, adjusted for prespecified prognostic factors. The adjusted common odds ratio measured the likelihood that intraarterial treatment would lead to lower modified Rankin scores, as compared with usual care alone (shift analysis).",
+        "DOI": "85.2992/1443.86.7.0369",
+        "manuscriptURL": "https://www.nejm.org/doi/full/10.1056/NEJMoa1411587",
+        "disciplines": ["Medical Science"],
+        "Tags": ["brain", "stroke", "intraarterial"],
+        "likes": 748,
+        "saves": 2049
+    },
+    {
+        "Title": "Introduction to e-commerce",
+        "Authors": [{
+            "name": "Rayport, J",
+            "email": "rayportj@gmail.com"
+        },
+        {
+            "name": "Jaworski, B",
+            "email": "jaworski@mcgrawhill.com"
+        }
+        ],
+        "Description": "This text covers the entire landscape of e-commerce. The key message is that faculty who want to teach an introductory class on e-commerce and focus on the “strategy” parts of e-commerce first and technology second, should adopt this book. Faculty who teach marketing, management, strategy and entrepreneurship as the “core” discipline prefer this book over “technology-oriented” e-commerce books. Introduction to e-Commerce gives present and future practitioners of e-Commerce a solid foundation in all aspects of conducting business in the networked economy. The text focus is on what a manager needs to know about Internet infrastructure, strategy formulation and implementation, technology concepts, public policy issues, and capital infrastructure in order to make effective business decisions. ",
+        "DOI": "82.5265/1859.75.3.9767",
+        "manuscriptURL": "https://repository.vnu.edu.vn/handle/VNU_123/82604",
+        "disciplines": ["Technology", "Business", "Marketing"],
+        "Tags": ["commerce", "electronics", "business"],
+        "likes": 415,
+        "saves": 586
+    }
+]

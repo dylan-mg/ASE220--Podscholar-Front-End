@@ -32,6 +32,7 @@ function adminCheck(req, res, next) {
 }
 
 function emailHelper(reqEmail, emails) {
+    console.log("test");
     for (let email in emails) {
         if (email.toLowerCase() == reqEmail.toLowerCase()) {
             return false;
