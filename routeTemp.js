@@ -29,7 +29,11 @@ router.get('/pages/:page_name', function (req, res) {
 })
 /* Home Page (not logged in) */
 router.get('/', (req, res) => {
-    res.render('./pages/index.ejs');
+    res.render('index.ejs');
+}) // render the index.ejs page
+/* Home Page (logged in) */
+router.get('/', (req, res) => {
+    res.render('index.ejs');
 }) // render the index.ejs page
 /* Scientific discipline index page */
 router.get('/categories', (req, res) => {
@@ -101,8 +105,7 @@ router.get('/authors/create', (req, res) => {
 /*User/author profile */
 router.get('/users/:first_name_last_name', (req, res) => {
     var name = req.params.first_name_last_name;
-
-    name.split('-')
+    name.split(/-.*_/)
     if (name.length > 2) {
         db.collection('users').find({ fname: name[0], lname: name[1] }, function (err, result) {
             if (err) {
@@ -127,16 +130,16 @@ router.get('/account', (req, res) => {
     //if the session is logged in, render the account page
     var session = req.session;
     var user = session.username;
-    user.split('-')
+    user.split(/-.*_/)
     if (session != null) {
         if (user.length == 2) {
             db.collection('users').findOne({ fname: user[0], lname: user[1] }, function (err, result) {
-                res.render('profile.ejs', { user: result });
+                res.render('./pages/profile.ejs', { user: result });
             })
         }
         else {
             db.collection('users').find({ fname: user[0], lname: user[1] }, function (err, result) {
-                res.render('profile.ejs', { user: result[user[2]] });
+                res.render('./pages/profile.ejs', { user: result[user[2]] });
             })
         }
     }
@@ -165,7 +168,7 @@ router.get('/acount/settings', (req, res) => {
     //if the session is logged in, render the account settings page
     var session = req.session;
     var user = session.username;
-    user.split(/-.*_/)
+    user.split('-')
     if (session != null) {
         if (user.length == 2) {
             db.collection('users').findOne({ fname: user[0], lname: user[1] }, function (err, result) {
@@ -226,7 +229,6 @@ router.get('/podcasts/:podcast_title/edit', (req, res) => {
     var name = session.username;
     name.split('-')
     var podcast = [];
-    name.split('-')
     db.collection('podcasts').findOne({ title: title }, function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
@@ -473,7 +475,13 @@ router.delete('/api/podcasts/:podcast_title', function (req, res) {
             authored = result[0].authored
         })
         db.collection('podcasts').findOne({ title: podcast }).toArray(function (err, result) {
-        if (podcast in authored) {
+            if (err) {
+                console.log('Error finding podcast');
+                throw err;
+            }
+            podcaststuff = result;
+        })
+        if (podcast in authored && podcaststuff.fname == name[0] && podcaststuff.lname == name[1]) {
             db.collection('podcasts').deleteOne({ title: podcast }, function (err, result) {
                 if (err) {
                     console.log('Error deleting podcast');
@@ -486,6 +494,10 @@ router.delete('/api/podcasts/:podcast_title', function (req, res) {
 router.patch('/api/podcasts/:podcast_title/actions/subscribe', function (req, res) {
     var podcast = req.params.podcast_title;
     db.collection('users').updateOne({ title: podcast }, { $set: { subscribed: true } }, function (err, result) {
+        if (err) {
+            console.log('Error updating podcast');
+            throw err;
+        }
     })
 })
 router.patch('/api/podcasts/:podcast_title/actions/like', function (req, res) {
@@ -544,6 +556,8 @@ router.post('/api/auth/signin', function (req, res) {
 /* Author account approval */
 router.post('/api/authors', function (req, res) {
     var author = req.body;
+    author.split('-')
+
     db.collection('users').updateOne({ fname: author.fname, lname: author.lname }, { $set: { role: 'author' } }, function (err, result) {
     })
 })
@@ -562,13 +576,58 @@ router.get('/api/users/:first_name_last_name', function (req, res) {
 })
 router.post('/api/users/:first_name_last_name/actions/follow', function (req, res) {
     var user = req.params.first_name_last_name;
+    var mainuser = req.session.username;
+    var following = []
+    mainuser.split('-')
+    if (mainuser.length == 2) {
+        db.colletion('users').findOne({ fname: mainuser[0], lname: mainuser[1] }, function (err, result) {
+            if (user in result.following) {
+                var index = result.following.indexOf(user)
+                result.following.splice(index, 1)
+                following = result.following
+            }
+            else {
+                following = result.following
+                following.push(user)
+            }
+            db.collection('users').updateOne({ fname: mainuser[0], lname: mainuser[1] }, { $set: { following: following } }, function (err, result) { })
+        })
+    }
+    else {
+        var id;
+        db.collection('users').find({ fname: mainuser[0], lname: mainuser[1] }, function (err, result) {
+            var usr = result[mainuser[2]]
+            id = usr._id
+            if (user in usr.following) {
+                var index = usr.following.indexOf(user)
+                usr.following.splice(index, 1)
+                following = usr.following
+            }
+            else {
+                following = usr.following
+                following.push(user)
+            }
+        })
+        db.collection('users').updateOne({ _id: id }, { $set: { following: following } }, function (err, result) { })
+    }
 })
 router.get('/api/users/:first_name_last_name/podcasts/authored', function (req, res) {
     var user = req.params.first_name_last_name;
-    db.collection('podcasts').find({ author: user }).toArray(function (err, result) { })
+    user.split('-')
+    if (user.length == 2) {
+        db.collection('users').findOne({ fname: user[0], lname: user[1] }).toArray(function (err, result) { 
+            res.send(result.authored)
+        })
+    }
+    else {
+        db.collection('users').find({fname: user[0], lname: user[1]}).toArray(function (err, result) {
+            res.send(result[user[2]].authored)
+        })
+    }
 })
 router.get('/api/users/:first_name_last_name/podcasts/saves', function (req, res) {
     var user = req.params.first_name_last_name;
+    user.split('-')
     db.collection('podcasts').find({ saved: user }).toArray(function (err, result) { })
 })
 /* User/author account */
