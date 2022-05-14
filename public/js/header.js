@@ -1,5 +1,13 @@
 // checks if a user is signed in, returns true if so
 function bouncer() {
+    $.ajax({
+        type: "GET",
+        url: "/api/buttons",
+        data: "data",
+        success: function(response) {
+            console.log(response);
+        }
+    });
     console.log(window.sessionStorage);
     if (window.sessionStorage.getItem("username")) {
         if (window.sessionStorage.getItem("auth") == "true") {
@@ -11,6 +19,8 @@ function bouncer() {
 }
 
 function buttonLoader() {
+
+
     if (bouncer()) {
         // ACCOUNT INFO
         console.log(window.location.pathname);
@@ -20,8 +30,8 @@ function buttonLoader() {
             buttonMan("Saved", "bi-bookmark-fill", `/saved`, btnHoldingLad);
         }
 
-        if (window.location.pathname.slice(1) !== "/upload") {
-            buttonMan("Upload", "bi-upload", "/upload", btnHoldingLad);
+        if (window.location.pathname.slice(2) !== "/create") {
+            buttonMan("Upload", "bi-upload", "/podcasts/create", btnHoldingLad);
         }
 
         // BILLING

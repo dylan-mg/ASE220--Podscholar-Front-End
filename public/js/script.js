@@ -111,7 +111,6 @@ function loadcard(cardData, templateMan, destination, num) {
 
 function loadcards(podList) {
     let templateMan = document.getElementById("card-t");
-
     if (navigator.userAgent.match(/firefox|fxios/i)) {
         templateMan.querySelector(".card-footer-btn").classList.add("card-footer-btn-firefox");
         templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-transparent");
@@ -126,7 +125,6 @@ function loadcards(podList) {
         templateMan.querySelector(".card-lbtn").classList.remove("disabled");
         templateMan.querySelector(".card-sbtn").classList.remove("disabled");
     }
-
     // Loads all cards
     let desination = document.getElementById("cards-here");
 

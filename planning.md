@@ -25,15 +25,15 @@
   - similar feed*
   - user comments
 ### /podcasts/create
-  - Title
-  - Description
-  - audio file
-  - bibtex file
-  - URL of manuscript
-  - DOI
-  - SCientific disciplines
-  - tags
-  - Author's names/emails
+  [-] Title
+  [ ] Description
+  [-] audio file
+  [-] bibtex file
+  [ ] URL of manuscript
+  [-] DOI
+  [-] SCientific disciplines
+  [-] tags
+  [-] Author's names/emails
 
 JSON: Title, Tags, Description
 
