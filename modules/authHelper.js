@@ -1,6 +1,30 @@
 const fs = require('fs');
 const { emailVerifier } = require('./verifyHelper');
 
+const { MongoClient, Db } = require("mongodb");
+
+const dbName = process.env.dbname; // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+    } catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+});
+
 /**
  * 
  * @param {Response} res 
@@ -31,40 +55,27 @@ function adminCheck(req, res, next) {
     }
 }
 
-function emailHelper(reqEmail, emails) {
-    console.log("test");
-    for (let email in emails) {
-        if (email.toLowerCase() == reqEmail.toLowerCase()) {
-            return false;
-        }
-    }
-    return true;
-}
-
 function emailCheck(reqStuff, res) {
-    let reqEmail = reqStuff.email;
+    let reqEmail = reqStuff.email.toLowerCase();
     const MESSAGES = {
         alreadyExists: "An Email with this account already Exists",
         failedRegEX: "Please Enter a valid Email"
     }
 
     if (emailVerifier(reqEmail)) {
-        // check if the email is already in the system
-        let mapman = fs.openSync("./data/json/user_map.json");
-        let raw = fs.readFileSync("./data/json/user_map.json");
-        let emails = JSON.parse(raw.toString());
-        if (emailHelper(reqEmail, emails)) {
-            console.log("successful check");
-            fs.closeSync(mapman);
-            return 0;
-        } else {
-            fs.closeSync(mapman);
-            res.send({
-                verified: 2,
-                returnStatus: MESSAGES.alreadyExists
-            });
-            return 2;
-        }
+
+        db.collection("users").findOne({ "email": reqEmail }, (err, result) => {
+            if (err) {
+                console.log("failed test");
+                res.send({
+                    verified: 2,
+                    returnStatus: MESSAGES.alreadyExists
+                });
+                return 2;
+            } else {
+                return 0;
+            }
+        });
     } else {
         res.send({
             verified: 1,
@@ -77,6 +88,5 @@ function emailCheck(reqStuff, res) {
 module.exports = {
     redirector,
     seshCheck,
-    emailCheck,
-    emailHelper
+    emailCheck
 }

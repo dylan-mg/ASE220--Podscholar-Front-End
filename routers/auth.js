@@ -77,39 +77,10 @@ router.post("/in", (req, res) => {
                     id: userData._id
                 });
             } else {
-                console.log("object");
+                res.send({ verStat: false });
             }
         }
     })
-
-    /*     fs.readFile(`${JSON_PATH}/user_map.json`, (err, data) => {
-            let usersData = JSON.parse(data.toString());
-            for (email in usersData) {
-                if (email.toLowerCase() == req.body.email) {
-                    let userName = usersData[email];
-                    fs.readFile(`${USER_PATH}/${userName}.json`, (uErr, uData) => {
-                        // in future, will be converted to crypto hash matching, but for now
-                        let userData = JSON.parse(uData.toString());
-                        if (bcrypt.compareSync(userdata.password, bcrypt.hashSync(req.body.password))) {
-                            req.session.user = {
-                                id: userName,
-                                fName: userData.fName,
-                                lName: userData.lName,
-                                role: userData.role
-                            };
-                            res.send({
-                                verStat: true,
-                                id: userName
-                            });
-                        } else {
-                            res.send({ verStat: false });
-                        }
-                    })
-                }
-            }
-        }); */
-    // if it exists, check if password matches
-    // if either doesn't, respond with error
 });
 
 // DOOR [ /sign/up ]
