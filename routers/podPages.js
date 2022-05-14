@@ -6,11 +6,6 @@ const express = require('express')
 const router = express.Router()
 const fs = require('fs')
 
-const BIBTEX_PATH = process.env.BIBTEX_PATH;
-const JSON_PATH = process.env.JSON_PATH;
-const POD_PATH = process.env.POD_PATH;
-const PORT = 1337
-
 // DOOR [ /podcasts/:id ]
 // * GET
 // Loads the page for a given podcast, if it exists
