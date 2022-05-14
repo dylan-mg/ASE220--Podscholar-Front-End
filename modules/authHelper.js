@@ -1,35 +1,45 @@
-const bodyParser = require('body-parser');
 const fs = require('fs');
-const express = require('express');
-const session = require('express-session');
-const app = express();
+const { emailVerifier } = require('./verifyHelper');
 
+const { MongoClient, Db } = require("mongodb");
+
+const dbName = process.env.dbname; // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+    } catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+});
+
+/**
+ * 
+ * @param {Response} res 
+ */
 function redirector(res) {
-    fs.readFile('redirect.html', function(err, data) {
-        res.status(307);
-        res.send(data.toString());
-    });
+    res.redirect("/sign/out");
 }
 
 //placeholder setup for profile page later
 function seshCheck(req, res, next) {
-    if (req.session.user) {
+    if (req.session && req.session.user) {
         //if session has a user in it, lets the user load the page
         next();
     } else {
         redirector(res);
-    }
-}
-
-function authCheck(req, res, next) {
-    if (req.session.user.role) {
-        if (req.session.user.role == 1) {
-            next();
-        }
-    } else {
-        res.send('you are not worthy');
-        redirector(res);
-        return;
     }
 }
 
@@ -45,43 +55,28 @@ function adminCheck(req, res, next) {
     }
 }
 
-function emailHelper(reqEmail, emails) {
-    for (let email in emails) {
-        if (email.toLowerCase() == reqEmail.toLowerCase()) {
-            console.log("beed");
-            return false;
-        }
-    }
-    return true;
-}
-
 function emailCheck(reqStuff, res) {
-    let reqEmail = reqStuff.email;
-    const regMan = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+    let reqEmail = reqStuff.email.toLowerCase();
     const MESSAGES = {
         alreadyExists: "An Email with this account already Exists",
         failedRegEX: "Please Enter a valid Email"
     }
 
-    if (regMan.test(reqEmail)) {
-        // check if the email is already in the system
-        let mapman = fs.openSync("./data/json/user_map.json");
-        let raw = fs.readFileSync("./data/json/user_map.json");
-        let emails = JSON.parse(raw.toString());
-        if (emailHelper(reqEmail, emails)) {
-            console.log("successful check");
-            fs.closeSync(mapman);
-            return 0;
-        } else {
-            fs.closeSync(mapman);
-            res.send({
-                verified: 2,
-                returnStatus: MESSAGES.alreadyExists
-            });
-            return 2;
-        }
+    if (emailVerifier(reqEmail)) {
+
+        db.collection("users").findOne({ "email": reqEmail }, (err, result) => {
+            if (err) {
+                console.log("failed test");
+                res.send({
+                    verified: 2,
+                    returnStatus: MESSAGES.alreadyExists
+                });
+                return 2;
+            } else {
+                return 0;
+            }
+        });
     } else {
-        console.log("asdf");
         res.send({
             verified: 1,
             returnStatus: MESSAGES.failedRegEX
@@ -92,8 +87,6 @@ function emailCheck(reqStuff, res) {
 
 module.exports = {
     redirector,
-    authCheck,
     seshCheck,
-    emailCheck,
-    emailHelper
+    emailCheck
 }
