@@ -31,10 +31,6 @@ router.get('/pages/:page_name', function (req, res) {
 router.get('/', (req, res) => {
     res.render('./pages/index.ejs');
 }) // render the index.ejs page
-/* Home Page (logged in) */
-router.get('/', (req, res) => {
-    res.render('./pages/index.ejs');
-}) // render the index.ejs page
 /* Scientific discipline index page */
 router.get('/categories', (req, res) => {
     db.collection('categories').find().toArray(function (err, result) {
@@ -63,7 +59,7 @@ router.get('/keywords', (req, res) => {
             console.log('Error finding tags');
             throw err;
         }
-        res.res.render('keywords.ejs', {keywords: result});
+        res.res.render('keywords.ejs', { keywords: result });
     })
 })
 /*Tag page*/
@@ -105,14 +101,26 @@ router.get('/authors/create', (req, res) => {
 /*User/author profile */
 router.get('/users/:first_name_last_name', (req, res) => {
     var name = req.params.first_name_last_name;
+
     name.split('-')
-    db.collection('users').find({ fname: name[0], lname: name[1] }, function (err, result) {
-        if (err) {
-            console.log('Error finding users');
-            throw err;
-        }
-        res.render('profile.ejs', { user: result });
-    })
+    if (name.length > 2) {
+        db.collection('users').find({ fname: name[0], lname: name[1] }, function (err, result) {
+            if (err) {
+                console.log('Error finding users');
+                throw err;
+            }
+            res.render('profile.ejs', { user: result[name[2]] });
+        })
+    }
+    else {
+        db.collection('users').findOne({ fname: name[0], lname: name[1] }, function (err, result) {
+            if (err) {
+                console.log('Error finding users');
+                throw err;
+            }
+            res.render('profile.ejs', { user: result[0] });
+        })
+    }
 })
 /* User/author account */
 router.get('/account', (req, res) => {
@@ -121,9 +129,16 @@ router.get('/account', (req, res) => {
     var user = session.username;
     user.split('-')
     if (session != null) {
-        db.collection('users').findOne({ fname: user[0],lname: user[1] }, function (err, result) {
-            res.render('./pages/profile.ejs', { user: result });
-        })
+        if (user.length == 2) {
+            db.collection('users').findOne({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('profile.ejs', { user: result });
+            })
+        }
+        else {
+            db.collection('users').find({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('profile.ejs', { user: result[user[2]] });
+            })
+        }
     }
 })
 /* Edit/change personal information */
@@ -131,11 +146,18 @@ router.get('/account/details', (req, res) => {
     //if the session is logged in, render the account details page
     var session = req.session;
     var user = session.username;
-    user.split('-')
+    user.split(/-.*_/)
     if (session != null) {
-        db.collection('users').findOne({ fname: user[0],lname: user[1] }, function (err, result) {
-            res.render('./pages/details.ejs', { user: result });
-        })
+        if (user.length == 2) {
+            db.collection('users').findOne({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('./pages/details.ejs', { user: result });
+            })
+        }
+        else {
+            db.collection('users').find({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('./pages/details.ejs', { user: result[user[2]] });
+            })
+        }
     }
 })
 /*Edit/change account information*/
@@ -143,15 +165,22 @@ router.get('/acount/settings', (req, res) => {
     //if the session is logged in, render the account settings page
     var session = req.session;
     var user = session.username;
-    user.split('-')
+    user.split(/-.*_/)
     if (session != null) {
-        db.collection('users').findOne({fname: user[0], lname: user[1] }, function (err, result) {
-            res.render('./pages/settings.ejs', { user: result });
-        })
+        if (user.length == 2) {
+            db.collection('users').findOne({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('./pages/settings.ejs', { user: result });
+            })
+        }
+        else {
+            db.collection('users').find({ fname: user[0], lname: user[1] }, function (err, result) {
+                res.render('./pages/settings.ejs', { user: result[user[2]] });
+            })
+        }
     }
 })
 /*Authored podcasts*/
-router.get('/users/:first-name-last-name/podcasts/authored', (req, res) => {
+router.get('/users/:first_name_last_name/podcasts/authored', (req, res) => {
     var name = req.params.first_name_last_name;
     name.split('-')
     db.collection('users').find({ fname: name[0], lname: name[1] }, function (err, result) {
@@ -172,7 +201,12 @@ router.get('/users/:first_name_last_name/podcasts/saved', (req, res) => {
             console.log('Error finding users');
             throw err;
         }
-        res.render('saved.ejs', { user: result });
+        if (name.length == 2) {
+            res.render('saved.ejs', { user: result });
+        }
+        else {
+            res.render('saved.ejs', { user: result[name[2]] });
+        }
     })
 })
 /* Podcast upload page */
@@ -189,13 +223,28 @@ router.get('/podcasts/create', (req, res) => {
 router.get('/podcasts/:podcast_title/edit', (req, res) => {
     var title = req.params.podcast_title;
     var session = req.session;
+    var name = session.username;
+    name.split('-')
+    var podcast = [];
+    name.split('-')
     db.collection('podcasts').findOne({ title: title }, function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
         }
-        if (session.role == 'admin' || (session.role == 'author' && result.author == session.username)) {
-            res.render('./pages/podcasts/edit.ejs', { podcast: result });
+        if (name.length == 2) {
+            if (session.role == 'admin' || (session.role == 'author' && result.fname == name[0] && result.lname == name[1])) {
+
+                res.render('./pages/podcasts/edit.ejs', { podcast: result });
+            }
+        }
+        else {
+            podcast = result;
+        }
+    })
+    db.collection('users').find({ fname: name[0], lname: name[1] }, function (err, result) {
+        if (podcast in result[name[2]].authored) {
+            res.render('./pages/podcasts/edit.ejs', { podcast: podcast });
         }
     })
 })
@@ -235,6 +284,11 @@ router.get('/api/search/date/:date', function (req, res) {
 /* Home page (logged in) */
 router.get('/api', function (req, res) {
     db.collection('podcasts').find().sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
     })
 })
 router.get('/api/search/keyword/:keyword', function (req, res) {
@@ -339,12 +393,12 @@ router.get('/api/keywords', function (req, res) {
     })
 
     forEach(keywords, function (keyword) {
-        for(i=0; i<sort.length; i++) {
+        for (i = 0; i < sort.length; i++) {
             if (sort[i][0] == keyword.name) {
                 send.push({ keyword: keyword.name, count: sort[i][1] });
             }
         }
-     })
+    })
     res.send(send)
 })
 /* Tage page */
@@ -403,16 +457,36 @@ router.patch('/api/podcasts/:podcast_title', function (req, res) {
 })
 router.delete('/api/podcasts/:podcast_title', function (req, res) {
     var podcast = req.params.podcast_title;
-    db.collection('podcasts').deleteOne({ title: podcast }, function (err, result) {
-        if (err) {
-            console.log('Error deleting podcast');
-            throw err;
+    var name = req.session.username;
+    var authored = [];
+    var podcaststuff = [];
+    name.split('-')
+    if (name != null) {
+        db.collection('users').find({ fname: name[0], lname: name[1] }).toArray(function (err, result) {
+            if (err) {
+                console.log('Error finding user');
+                throw err;
+            }
+            if (name > 2) {
+                authored = result[name[2]].authored;
+            }
+            authored = result[0].authored
+        })
+        db.collection('podcasts').findOne({ title: podcast }).toArray(function (err, result) {
+        if (podcast in authored) {
+            db.collection('podcasts').deleteOne({ title: podcast }, function (err, result) {
+                if (err) {
+                    console.log('Error deleting podcast');
+                    throw err;
+                }
+            })
         }
-        res.send(result);
-    })
+    }
 })
 router.patch('/api/podcasts/:podcast_title/actions/subscribe', function (req, res) {
-
+    var podcast = req.params.podcast_title;
+    db.collection('users').updateOne({ title: podcast }, { $set: { subscribed: true } }, function (err, result) {
+    })
 })
 router.patch('/api/podcasts/:podcast_title/actions/like', function (req, res) {
     var podcast = req.params.podcast_title;
@@ -491,11 +565,11 @@ router.post('/api/users/:first_name_last_name/actions/follow', function (req, re
 })
 router.get('/api/users/:first_name_last_name/podcasts/authored', function (req, res) {
     var user = req.params.first_name_last_name;
-    db.collection('podcasts').find({ author: user }).toArray(function (err, result) {})
+    db.collection('podcasts').find({ author: user }).toArray(function (err, result) { })
 })
 router.get('/api/users/:first_name_last_name/podcasts/saves', function (req, res) {
     var user = req.params.first_name_last_name;
-    db.collection('podcasts').find({ saved: user }).toArray(function (err, result) {})
+    db.collection('podcasts').find({ saved: user }).toArray(function (err, result) { })
 })
 /* User/author account */
 router.get('/api/account', function (req, res) {
@@ -518,4 +592,4 @@ router.patch('/api/account', function (req, res) {
         res.send(result);
     })
 })
-module.exports = {router};
+module.exports = { router };
