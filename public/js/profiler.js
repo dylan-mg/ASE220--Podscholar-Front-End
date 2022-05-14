@@ -1,19 +1,22 @@
 function profiler() { // get the data
-    let urlParams = getAllUrlParams();
-    if (sessionStorage.getItem("ID") == urlParams.id) {
-        let editBtn = document.createElement("a");
-        editBtn.classList.add("btn", "btn-sm", "btn-outline-dark", "my-2", "bi", "bi-pen");
-        //editBtn.href = `editProfile.html?ID=${sessionStorage.getItem("ID")}`;
-        editBtn.innerHTML += " Edit your info";
-        profileStuff.appendChild(editBtn);
-        editBtn.addEventListener("click", () => {
-            alert("not implemented yet");
-        })
+        let urlParams = getAllUrlParams();
+        if (sessionStorage.getItem("ID") == urlParams.id) {
+            let editBtn = document.createElement("a");
+            editBtn.classList.add("btn", "btn-sm", "btn-outline-dark", "my-2", "bi", "bi-pen");
+            //editBtn.href = `/account/details`;
+            editBtn.innerHTML += " Edit your info";
+            profileStuff.appendChild(editBtn);
+            editBtn.addEventListener("click", () => {
+                alert("not implemented yet");
+            })
+        }
     }
+    const getLastItem = thePath => thePath.substring(thePath.lastIndexOf('/') + 1);
+    const name = getLastItem(window.location.href);
 
     $.ajax({
         type: "GET",
-        url: "https://jsonblob.com/api/jsonBlob/952466594483945472",
+        url: "/api/users/"+name,
         contentType: "application/json",
         error: (xhr, status) => {
             // if the request fails, this function executes.
@@ -35,7 +38,7 @@ function profiler() { // get the data
 
     $.ajax({
         type: "GET",
-        url: "https://jsonblob.com/api/jsonBlob/952471299104718848",
+        url: "/users/"+name+"/podcasts/authored",
         contentType: "application/json",
         error: (xhr, status) => {
             // if the request fails, this function executes.
@@ -80,4 +83,3 @@ function profiler() { // get the data
             loadcards(cardData);
         }
     });
-}
