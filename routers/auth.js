@@ -7,6 +7,30 @@ const router = express.Router()
 const fs = require('fs')
 const authHelper = require('../modules/authHelper.js');
 const vh = require('../modules/verifyHelper.js');
+const bcrypt = require("bcrypt");
+const { MongoClient, Db } = require("mongodb");
+
+const dbName = process.env.dbname; // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+    } catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+});
 
 const BIBTEX_PATH = process.env.BIBTEX_PATH;
 const JSON_PATH = process.env.JSON_PATH;
@@ -35,32 +59,55 @@ router.post("/in", (req, res) => {
 
     // check if email exists
     req.body.email = req.body.email.toLowerCase();
-    fs.readFile(`${JSON_PATH}/user_map.json`, (err, data) => {
-        let usersData = JSON.parse(data.toString());
-        for (email in usersData) {
-            if (email.toLowerCase() == req.body.email) {
-                let userName = usersData[email];
-                fs.readFile(`${USER_PATH}/${userName}.json`, (uErr, uData) => {
-                    // in future, will be converted to crypto hash matching, but for now
-                    let userData = JSON.parse(uData.toString());
-                    if (req.body.password == userData.password) {
-                        req.session.user = {
-                            id: userName,
-                            fName: userData.fName,
-                            lName: userData.lName,
-                            role: userData.role
-                        };
-                        res.send({
-                            verStat: true,
-                            id: userName
-                        });
-                    } else {
-                        res.send({ verStat: false });
-                    }
-                })
+    db.collection("users").findOne({ "email": req.body.email }, (err, userData) => {
+        if (err) {
+            res.send({ verStat: false });
+        } else {
+            let cpass = req.body.password.toString();
+            let hashed = bcrypt.hashSync(cpass, "$2b$10$0FwjQ0By1QJa711tC3RWcu", 10);
+            if (userData.password == hashed) {
+                req.session.user = {
+                    id: userData._id,
+                    fName: userData.fName,
+                    lName: userData.lName,
+                    role: userData.role
+                };
+                res.send({
+                    verStat: true,
+                    id: userData._id
+                });
+            } else {
+                console.log("object");
             }
         }
-    });
+    })
+
+    /*     fs.readFile(`${JSON_PATH}/user_map.json`, (err, data) => {
+            let usersData = JSON.parse(data.toString());
+            for (email in usersData) {
+                if (email.toLowerCase() == req.body.email) {
+                    let userName = usersData[email];
+                    fs.readFile(`${USER_PATH}/${userName}.json`, (uErr, uData) => {
+                        // in future, will be converted to crypto hash matching, but for now
+                        let userData = JSON.parse(uData.toString());
+                        if (bcrypt.compareSync(userdata.password, bcrypt.hashSync(req.body.password))) {
+                            req.session.user = {
+                                id: userName,
+                                fName: userData.fName,
+                                lName: userData.lName,
+                                role: userData.role
+                            };
+                            res.send({
+                                verStat: true,
+                                id: userName
+                            });
+                        } else {
+                            res.send({ verStat: false });
+                        }
+                    })
+                }
+            }
+        }); */
     // if it exists, check if password matches
     // if either doesn't, respond with error
 });
@@ -82,6 +129,7 @@ router.post("/up", (req, res) => {
     } else {
         console.log("success");
         let newEntryData = req.body;
+        let fixedEmail = req.body.email.toLowerCase();
         let fixedFname = req.body.fName.toLowerCase();
         let fixedLname = req.body.lName.toLowerCase();
         let fileName = `${fixedFname}-${fixedLname}`

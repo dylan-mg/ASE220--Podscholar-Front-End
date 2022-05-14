@@ -7,7 +7,7 @@ const router = express.Router()
 const fs = require('fs')
 const fileHelpers = require('../modules/fileHelpers.js');
 const vh = require('../modules/verifyHelper.js');
-const {MongoClient, Db} = require("mongodb");
+const { MongoClient, Db } = require("mongodb");
 
 const dbName = process.env.dbname // name of database for mongoDB
 const URL = process.env.MONGOURI;
@@ -25,23 +25,20 @@ MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
     }
     try {
         db = client.db(dbName);
-    }
-    catch (error) {
+    } catch (error) {
         console.log('Error finding database');
         throw error;
     }
-
 });
 
-// DOOR [ /api/podcasts/newest ]
+// DOOR [ /podcasts/api/newest ]
 // * GET
 // Gets info on the 10 newest podcast episodes
 router.get("/newest", (req, res) => {
     // designate response type
     res.contentType("application/json");
-    let query = {};
 
-    db.collection("podcasts").find(query).sort({_id:-1}).limit(10).toArray((err, result) => {
+    db.collection("podcasts").find().sort({ _id: -1 }).limit(10).toArray((err, result) => {
         if (err) {
             fileHelpers.errorMan(err.errno, res, req.url);
         } else {

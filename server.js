@@ -33,8 +33,9 @@ app.use(express.static(`${folder}`));
 const podAPIs = require("./routers/podAPI");
 const podPages = require("./routers/podPages");
 const auth = require("./routers/auth");
+const { Db } = require('mongodb');
 
-app.use("/api/podcasts", podAPIs);
+app.use("/podcasts/api", podAPIs);
 app.use("/podcasts", podPages);
 app.use("/sign", auth);
 

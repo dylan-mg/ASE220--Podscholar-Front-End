@@ -18,8 +18,8 @@
     },
     "homepage": "https://github.com/gainesd2/ASE220--Podscholar-Final#readme",
     "dependencies": {
+        "bcrypt": "^5.0.1",
         "body-parser": "^1.20.0",
-        "crypto": "^1.0.1",
         "dotenv": "^16.0.0",
         "ejs": "^3.1.6",
         "express": "^4.17.3",
