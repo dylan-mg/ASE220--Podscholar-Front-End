@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Aleo:wght@400;700&family=Palanquin&display=swap');
+h3 {
+    font-family: "Aleo", Serif;
+    font-weight: 700 !important
+}
+
+.btn-yellow {
+    background-color: #ffcd39;
+}
+
+.btn-yellow:hover {
+    background-color: #dbb132;
+}

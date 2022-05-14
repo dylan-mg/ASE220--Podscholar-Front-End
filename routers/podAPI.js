@@ -7,10 +7,31 @@ const router = express.Router()
 const fs = require('fs')
 const fileHelpers = require('../modules/fileHelpers.js');
 const vh = require('../modules/verifyHelper.js');
+const {MongoClient, Db} = require("mongodb");
 
-const BIBTEX_PATH = process.env.BIBTEX_PATH;
-const JSON_PATH = process.env.JSON_PATH;
-const POD_PATH = process.env.POD_PATH;
+const dbName = process.env.dbname // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+    }
+    catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+
+});
 
 // DOOR [ /api/podcasts/newest ]
 // * GET
@@ -18,29 +39,14 @@ const POD_PATH = process.env.POD_PATH;
 router.get("/newest", (req, res) => {
     // designate response type
     res.contentType("application/json");
-    let fileName = `${JSON_PATH}/pod_map.json`;
-    // checks to read the file
-    fs.readFile(fileName, (err, data) => {
-        let rawdata = data.toString();
-        let podTrackingData = JSON.parse(rawdata);
+    let query = {};
 
-        // if less than 10 entries
-        if (podTrackingData.length < 10) {
-            // ignore until data set is large enough
-            console.log("Possible Data Set Problem -- Total Pods < 10");
-        } else {
-            // Otherwise Only get 10 most recent entries
-            podTrackingData = podTrackingData.slice(0, 10);
-        }
-
-        // if there's an error, 
+    db.collection("podcasts").find(query).sort({_id:-1}).limit(10).toArray((err, result) => {
         if (err) {
-            // ...call error handler function
             fileHelpers.errorMan(err.errno, res, req.url);
         } else {
-            // otherwise, send the parsed data and an OK signal
             res.status(200);
-            res.send(podTrackingData);
+            res.send(result);
         }
     });
 });

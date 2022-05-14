@@ -12,13 +12,12 @@ function ajaxStuff(inurl) {
         },
         success: (podData) => {
             // First get podcast data
-            console.log(podData);
             loadcards(podData);
         }
     });
 }
 
-function populateCardSimple(cardData, newCard, podName) {
+function populateCardSimple(cardData, newCard) {
     // title
     newCard.querySelector(".card-title").append(cardData.Title);
 
@@ -33,13 +32,10 @@ function populateCardSimple(cardData, newCard, podName) {
     // saves
     newCard.querySelector(".bi-bookmark").append(cardData.saves);
 
-    if (sessionStorage.getItem("auth") == "true") {
-        newCard.querySelector(".card-lbtn").classList.remove("disabled");
-        newCard.querySelector(".card-sbtn").classList.remove("disabled");
-    }
-
     // audio player
-    newCard.querySelector(".card-audio").setAttribute("src", `/audio/${podName}.mp3`);
+    newCard.querySelector(".card-audio").setAttribute("src", `/audio/${cardData._id}.mp3`);
+
+
 }
 
 function populateCardLoops(cardData, newCard) {
@@ -92,13 +88,12 @@ function populateCardLoops(cardData, newCard) {
 }
 
 /**
- * 
  * @param {Array} cardData 
  * @param {HTMLElement} templateMan 
  * @param {HTMLElement} destination
  * @param {int} num 
  */
-function loadcard(cardData, templateMan, destination, num, podName) {
+function loadcard(cardData, templateMan, destination, num) {
     // clone template
     let newCardNode = templateMan.cloneNode(true);
     // unhide it
@@ -107,33 +102,36 @@ function loadcard(cardData, templateMan, destination, num, podName) {
     destination.appendChild(newCardNode);
 
     let newCard = destination.querySelector(`#card-${num}`);
-
+    $(".card-linkMan", newCard).attr("href", `/pods/${cardData._id}`);
     // populate the card
-    populateCardSimple(cardData, newCard, podName);
+    populateCardSimple(cardData, newCard, cardData._id);
     populateCardLoops(cardData, newCard);
     destination.append(newCard);
 }
 
 function loadcards(podList) {
-    // Loads all cards
     let templateMan = document.getElementById("card-t");
+
+    if (navigator.userAgent.match(/firefox|fxios/i)) {
+        templateMan.querySelector(".card-footer-btn").classList.add("card-footer-btn-firefox");
+        templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-transparent");
+        templateMan.querySelector(".bi-bookmark").classList.add("bg-transparent");
+        console.log(templateMan.querySelector(".bi-hand-thumbs-up"));
+    } else {
+        templateMan.querySelector(".bi-hand-thumbs-up").classList.add("bg-dark");
+        templateMan.querySelector(".bi-bookmark").classList.add("bg-dark");
+    }
+
+    if (sessionStorage.getItem("auth") == "true") {
+        templateMan.querySelector(".card-lbtn").classList.remove("disabled");
+        templateMan.querySelector(".card-sbtn").classList.remove("disabled");
+    }
+
+    // Loads all cards
     let desination = document.getElementById("cards-here");
+
     for (let i = 0; i < podList.length; i++) {
-        $.ajax({
-            type: "GET",
-            url: `/api/pods/data/${podList[i]}`,
-            contentType: "application/json",
-            error: (xhr, status) => {
-                console.log(xhr);
-                console.log(status);
-                //alert("Cannot Access Data at this time. Please Try again later");
-            },
-            success: (podData) => {
-                // First get podcast data
-                console.log(i);
-                loadcard(podData, templateMan, desination, i, podList[i]);
-            }
-        });
+        loadcard(podList[i], templateMan, desination, i);
     }
 }
 /*

@@ -31,10 +31,6 @@ router.get('/pages/:page_name', function (req, res) {
 router.get('/', (req, res) => {
     res.render('./pages/index.ejs');
 }) // render the index.ejs page
-/* Home Page (logged in) */
-router.get('/', (req, res) => {
-    res.render('./pages/index.ejs');
-}) // render the index.ejs page
 /* Scientific discipline index page */
 router.get('/categories', (req, res) => {
     db.collection('categories').find().toArray(function (err, result) {

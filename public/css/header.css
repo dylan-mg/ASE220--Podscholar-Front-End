@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Aleo:wght@700&display=swap');
 .header-Logo {
     user-select: none;
     font-family: 'Aleo', serif;
+    font-weight: 700;
 }
 
 .header-btn {
