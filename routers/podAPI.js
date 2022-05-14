@@ -18,13 +18,13 @@ const URL = process.env.MONGOURI;
  * @type {Db} MongoDB database Object
  */
 let db;
-MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+MongoClient.connect(URL, { useNewUrlParser: true }, async(err, client) => {
     if (err) {
         console.log('Error connecting to MongoDB');
         throw err;
     }
     try {
-        db = client.db(dbName);
+        db = await client.db(dbName);
     } catch (error) {
         console.log('Error finding database');
         throw error;

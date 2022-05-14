@@ -1,11 +1,3 @@
-<script>
-    // redirects anyone who tries to load this in browser
-    window.location.href = "../index.html";
-</script>
-
-Now that the plebs are gone, let's talk shop
-Hit ctrl + shfit + V to view this doc properly, or don't if this looks better
-
 # Table of contents
 
 # Folder Info
