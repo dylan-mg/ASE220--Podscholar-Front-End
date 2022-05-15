@@ -53,7 +53,7 @@ router.get('/categories', (req, res) => {
 /* Scientific discipline detail page */
 router.get('/categories/:scientific_discipline', (req, res) => {
     discipline = req.params.scientific_discipline;
-    db.collection('categories').findOne({ name: discipline }, function (err, result) {
+    db.collection('categories').findOne({ _id: discipline }, function (err, result) {
         if (err) {
             console.log('Error finding categories');
             throw err;
@@ -76,7 +76,7 @@ router.get('/keywords', (req, res) => {
 /*Tag page*/
 router.get('/keywords/:tag', (req, res) => {
     var tag = req.params.tag;
-    db.collection('keywords').findOne({ name: tag }, function (err, result) {
+    db.collection('keywords').findOne({ _id: tag }, function (err, result) {
         if (err) {
             console.log('Error finding tags');
             throw err;
@@ -88,7 +88,7 @@ router.get('/keywords/:tag', (req, res) => {
 /* Podcast page */
 router.get('/podcasts/:podcast_title', (req, res) => {
     var title = req.params.podcast_title;
-    db.collection('podcasts').findOne({ title: title }, function (err, result) {
+    db.collection('podcasts').findOne({ Title: title }, function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -230,7 +230,7 @@ router.get('/users/:first_name_last_name/podcasts/authored', (req, res) => {
             console.log('Error finding users');
             throw err;
         }
-        res.render('authored.ejs', { user: result });
+        res.render('authored.ejs', { user: result.authored });
 
     })
 })
@@ -312,7 +312,7 @@ router.get('/api', function (req, res) {
 
 router.get('/api/search/keyword/:keyword', function (req, res) {
     var keyword = req.params.keyword;
-    db.collection('podcasts').find({ $text: { $search: keyword } }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({keywords: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -345,7 +345,7 @@ router.get('/api', function (req, res) {
 
 router.get('/api/search/keyword/:keyword', function (req, res) {
     var keyword = req.params.keyword;
-    db.collection('podcasts').find({ tags: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({ keywords: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -377,13 +377,12 @@ router.get('/api/categories', function (req, res) {
         categories = result;
     })
     forEach(categories, function (category) {
-        db.collection('podcasts').find({ category: category.name }).toArray(function (err, result) {
+        db.collection('podcasts').find({ categories: category._id }).toArray(function (err, result) {
             if (err) {
                 console.log('Error finding podcasts');
                 throw err;
             }
-            send.append({ category: category.name, count: result.length });
-            category[count] = result.length;
+            send.append({ category: category._id, count: result.length });
         })
     })
     res.send(send)
@@ -392,7 +391,7 @@ router.get('/api/categories', function (req, res) {
 /* Scientific discipline detail page */
 router.get('/api/categories/:scientific_discipline', function (req, res) {
     var category = req.params.scientific_discipline;
-    db.collection('podcasts').find({ category: category }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({ categories: category }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -404,7 +403,7 @@ router.get('/api/categories/:scientific_discipline', function (req, res) {
 router.get('/api/categories/:scientific_discipline/search/keyword/:keyword', function (req, res) {
     var category = req.params.scientific_discipline;
     var keyword = req.params.keyword;
-    db.collection('podcasts').find({ category: category, tags: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({ categories: category, keywords: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -416,7 +415,7 @@ router.get('/api/categories/:scientific_discipline/search/keyword/:keyword', fun
 router.get('/api/categories/:scientific_discipline/search/date/:date', function (req, res) {
     var category = req.params.scientific_discipline;
     var date = req.params.date;
-    db.collection('podcasts').find({ category: category, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({ categories: category, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -438,12 +437,12 @@ router.get('/api/keywords', function (req, res) {
         keywords = result;
     })
     forEach(keywords, function (keyword) {
-        db.collection('podcasts').find({ tags: keyword.name }).toArray(function (err, result) {
+        db.collection('podcasts').find({ keywords: keyword._id }).toArray(function (err, result) {
             if (err) {
                 console.log('Error finding podcasts');
                 throw err;
             }
-            sort.push([keyword.name, result.length]);
+            sort.push([keyword._id, result.length]);
         })
         sort.sort(function (a, b) {
             return a[1] - b[1]
@@ -452,8 +451,8 @@ router.get('/api/keywords', function (req, res) {
 
     forEach(keywords, function (keyword) {
         for (i = 0; i < sort.length; i++) {
-            if (sort[i][0] == keyword.name) {
-                send.push({ keyword: keyword.name, count: sort[i][1] });
+            if (sort[i][0] == keyword._id) {
+                send.push({ keyword: keyword._id, count: sort[i][1] });
             }
         }
     })
@@ -463,7 +462,7 @@ router.get('/api/keywords', function (req, res) {
 /* Tag page */
 router.get('/api/keywords/:keyword', function (req, res) {
     var keyword = req.params.keyword;
-    db.collection('podcasts').findOne({ tags: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').findOne({ keywords: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -475,7 +474,7 @@ router.get('/api/keywords/:keyword', function (req, res) {
 router.get('/api/keywords/:keyword/search/date/:date', function (req, res) {
     var keyword = req.params.keyword;
     var date = req.params.date;
-    db.collection('podcasts').find({ tags: keyword, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+    db.collection('podcasts').find({ keywords: keyword, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -564,6 +563,7 @@ router.patch('/api/podcasts/:podcast_title/actions/subscribe', function (req, re
     })
 })
 
+// needs to be fixed
 router.patch('/api/podcasts/:podcast_title/actions/like', function (req, res) {
     var podcast = req.params.podcast_title;
     var user = req.body
@@ -615,6 +615,7 @@ router.post('/api/auth/signup', function (req, res) {
     })
 })
 
+// needs work
 router.post('/api/auth/signin', function (req, res) {
     var user = req.body;
     db.collection('users').findOne(user.username, function (err, result) {
@@ -726,6 +727,7 @@ router.get('/api/users/:first_name_last_name/podcasts/authored', function (req, 
     }
 })
 
+// needs work
 router.get('/api/users/:first_name_last_name/podcasts/saves', function (req, res) {
     var user = req.params.first_name_last_name;
     user.split('-')
