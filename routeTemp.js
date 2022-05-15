@@ -41,13 +41,25 @@ router.get('/', (req, res) => {
 
 /* Scientific discipline index page */
 router.get('/categories', (req, res) => {
+    var categories = [];
+    var send = [];
     db.collection('categories').find().toArray(function (err, result) {
         if (err) {
             console.log('Error finding categories');
             throw err;
         }
-        res.render('categories.ejs', { data: result, title: 'categories' });
+        categories = result;
     })
+    forEach(categories, function (category) {
+        db.collection('podcasts').find({ categories: category._id }).toArray(function (err, result) {
+            if (err) {
+                console.log('Error finding podcasts');
+                throw err;
+            }
+            send.append({ category: category._id, count: result.length });
+        })
+    })
+    res.render('ct-list.ejs', { data: send, title: 'Categories' });
 })
 
 /* Scientific discipline detail page */
@@ -64,12 +76,36 @@ router.get('/categories/:scientific_discipline', (req, res) => {
 
 /* Tags index page */
 router.get('/keywords', (req, res) => {
+    var keywords = [];
+    var sort = [];
+    var send = [];
     db.collection('keywords').find().toArray(function (err, result) {
         if (err) {
-            console.log('Error finding tags');
+            console.log('Error finding keywords');
             throw err;
         }
-        res.res.render('ct-list.ejs', { data: result, title: 'keywords' });
+        keywords = result;
+    })
+    forEach(keywords, function (keyword) {
+        db.collection('podcasts').find({ keywords: keyword._id }).toArray(function (err, result) {
+            if (err) {
+                console.log('Error finding podcasts');
+                throw err;
+            }
+            sort.push([keyword._id, result.length]);
+        })
+        sort.sort(function (a, b) {
+            return a[1] - b[1]
+        })
+        res.render('ct-list.ejs', { data: sort, title: 'Keywords' });
+    })
+
+    forEach(keywords, function (keyword) {
+        for (i = 0; i < sort.length; i++) {
+            if (sort[i][0] == keyword._id) {
+                send.push({ keyword: keyword._id, count: sort[i][1] });
+            }
+        }
     })
 })
 
@@ -382,7 +418,7 @@ router.get('/api/categories', function (req, res) {
                 console.log('Error finding podcasts');
                 throw err;
             }
-            send.append({ category: category._id, count: result.length });
+            send.append([ category._id, result.length ]);
         })
     })
     res.send(send)

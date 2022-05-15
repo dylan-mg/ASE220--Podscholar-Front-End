@@ -316,3 +316,4 @@ router.get('/api/search/:options', function (req, res) {
         }
     }
 })
+module.exports ={ router }
