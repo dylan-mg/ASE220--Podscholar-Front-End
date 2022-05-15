@@ -33,7 +33,30 @@ app.use(express.static(`${folder}`));
 const podAPIs = require("./routers/podAPI");
 const podPages = require("./routers/podPages");
 const auth = require("./routers/auth");
-const { Db } = require('mongodb');
+const { MongoClient, Db } = require("mongodb");
+
+const dbName = process.env.dbname // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+        console.log("active");
+    } catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+});
 
 app.use("/podcasts/api", podAPIs);
 app.use("/podcasts", podPages);
