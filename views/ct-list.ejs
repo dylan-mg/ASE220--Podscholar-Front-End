@@ -33,9 +33,9 @@
         <!-- Section-->
         <main class="py-4 d-flex flex-column">
             <div class="container px-4 px-md-5 mt-3">
-                <h3 id="headerLabel"><% title.value %></h3>
+                <h3 id="headerLabel"><%= title.value %></h3>
                 <!--Use ejs to load a different template for tags and categories, but give both templates the same id-->
-                <% if (title.value == Keywords) {%>
+                <% if (title.value == Keywords){ %>
                     <% for (var i=0; i < data.length; i++){ %>
                     <div class="container mt-3">
                         <div class="card" style="width: 100%">
@@ -56,7 +56,7 @@
                                 <a href="/categories/<%= data[i]._id %>" class="card-title">
                                 <%= data[i]._id %> (<%= data[i].count %>)
                                 </a>                             
-                                <p><% data[i].Description %></p>
+                                <p><%= data[i].Description %></p>
                             </div>
                         </div>
                     </div>
