@@ -46,7 +46,7 @@ router.get('/categories', (req, res) => {
             console.log('Error finding categories');
             throw err;
         }
-        res.render('categories.ejs', { categories: result });
+        res.render('categories.ejs', { data: result, title: 'categories' });
     })
 })
 
@@ -69,7 +69,7 @@ router.get('/keywords', (req, res) => {
             console.log('Error finding tags');
             throw err;
         }
-        res.res.render('keywords.ejs', { keywords: result });
+        res.res.render('ct-list.ejs', { data: result, title: 'keywords' });
     })
 })
 
