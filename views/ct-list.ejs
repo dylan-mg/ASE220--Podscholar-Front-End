@@ -35,7 +35,7 @@
             <div class="container px-4 px-md-5 mt-3">
                 <h3 id="headerLabel"><%= title.value %></h3>
                 <!--Use ejs to load a different template for tags and categories, but give both templates the same id-->
-                <% if (title.value == Keywords) { %>
+                <% if (title.value == 'Keywords') { %>
                     <% for (var i=0; i < data.length; i++){ %>
                     <div class="container mt-3">
                         <div class="card" style="width: 100%">
@@ -48,7 +48,7 @@
                     </div>
                     <% } %>
                 <% } %>
-                <% if (title.value == Categories) {%>
+                <% if (title.value == 'Categories') {%>
                     <% for (var i=0; i < data.length; i++){ %>
                     <div class="container mt-3">
                         <div class="card" style="width: 100%">
