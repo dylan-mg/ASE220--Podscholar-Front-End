@@ -615,15 +615,15 @@ router.post('/api/auth/signup', function (req, res) {
     })
 })
 
-// needs work
 router.post('/api/auth/signin', function (req, res) {
     var user = req.body;
-    db.collection('users').findOne(user.username, function (err, result) {
+    
+    db.collection('users').findOne({email: user.email}, function (err, result) {
         if (err) {
             console.log('Error finding user');
             throw err;
         }
-        res.send(result);
+        res.send({result.password,user.password});
     })
 })
 
@@ -727,16 +727,27 @@ router.get('/api/users/:first_name_last_name/podcasts/authored', function (req, 
     }
 })
 
-// needs work
 router.get('/api/users/:first_name_last_name/podcasts/saves', function (req, res) {
     var user = req.params.first_name_last_name;
     user.split('-')
-    db.collection('podcasts').find({ saved: user }).toArray(function (err, result) { 
+    if (user.length == 2) {
+    db.collection('users').findOne({ fname: user[0], lname:user[1] }).toArray(function (err, result) { 
         if (err) {
             console.log('Error finding user');
             throw err;
         }
+        res.send(result.saves)
     })
+}
+else {
+    db.collection('users').find({ fname: user[0], lname: user[1] }).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding user');
+            throw err;
+        }
+        res.send(result[user[2]].saves)
+    })
+}
 })
 
 /* User/author account */
