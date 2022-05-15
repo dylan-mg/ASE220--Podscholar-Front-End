@@ -33,8 +33,35 @@
         <!-- Section-->
         <main class="py-4 d-flex flex-column">
             <div class="container px-4 px-md-5 mt-3">
-                <h3 id="headerLabel"></h3>
+                <h3 id="headerLabel"><% title.value %></h3>
                 <!--Use ejs to load a different template for tags and categories, but give both templates the same id-->
+                <% if (title.value == Keywords) {%>
+                    <% for (var i=0; i < data.length; i++){ %>
+                    <div class="container mt-3">
+                        <div class="card" style="width: 100%">
+                            <div class="card-body">
+                                <a href="/keywords/<%= data[i]._id %>" class="card-title">
+                                <%= data[i]._id %> (<%= data[i].count %>)
+                                </a>             
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                <% } %>
+                <% if (title.value == Categories) {%>
+                    <% for (var i=0; i < data.length; i++){ %>
+                    <div class="container mt-3">
+                        <div class="card" style="width: 100%">
+                            <div class="card-body">
+                                <a href="/categories/<%= data[i]._id %>" class="card-title">
+                                <%= data[i]._id %> (<%= data[i].count %>)
+                                </a>                             
+                                <p><% data[i].Description %></p>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                <% } %>
                 <!-- EJS can load the cards here or they can be loaded via ajax in lister.js -->
             </div>
         </main>
