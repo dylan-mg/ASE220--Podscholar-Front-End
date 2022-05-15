@@ -772,6 +772,59 @@ router.patch('/api/account', function (req, res) {
         res.send(result);
     })
 })
+router.get('/api/search/:options', function (req, res) {
+    var options = req.params.options;
+    for(i=0;i<options.length;i++){
+        options.split(':')
+    }
+    for (i = 0; i < options.length; i++) {
+        if (options[i][0] == 'author') {
+            db.collection('podcasts').find({ author: { $regex: options[i][1], $options: 'i' } }).toArray(function (err, result) {
+                if (err) {
+                    console.log('Error finding podcast');
+                    throw err;
+                }
+                res.send(result);
+            })
+        }
+        else if (options[i][0] == 'category') {
+            db.collection('podcasts').find({ categories: { $regex: options[i][1], $options: 'i' } }).toArray(function (err, result) {
+                if (err) {
+                    console.log('Error finding podcast');
+                    throw err;
+                }
+                res.send(result);
+            })
+        }
+        else if (options[i][0]=='date'){
+            db.collection('podcasts').find({ date: { $regex: options[i][1], $options: 'i' } }).toArray(function (err, result) {
+                if (err) {
+                    console.log('Error finding podcast');
+                    throw err;
+                }
+                res.send(result);
+            })
+        }
+        else if (options[i][0]=='keyword'){
+            db.collection('podcasts').find({ keywords: { $regex: options[i][1], $options: 'i' } }).toArray(function (err, result) {
+                if (err) {
+                    console.log('Error finding podcast');
+                    throw err;
+                }
+                res.send(result);
+            })
+        }
+        else{
+            db.collection('podcasts').find({ Title: { $regex: options[i][1], $options: 'i' } }).toArray(function (err, result) {
+                if (err) {
+                    console.log('Error finding podcast');
+                    throw err;
+                }
+                res.send(result);
+            })
+        }
+    }
+})
 
 
 module.exports = { router };
