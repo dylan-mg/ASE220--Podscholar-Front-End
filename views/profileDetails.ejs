@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>podScholar</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/PodScholars-removebg-preview.png" />
+
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/style.css" rel="stylesheet" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/header.css" rel="stylesheet" />
+    <link href="/css/cards.css" rel="stylesheet" />
+
+    <!--Bootstrap JS/Popper Bundle-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!--jquery hosted locally-->
+    <script src="/js/jquery-3.6.0.js"></script>
+
+    <script src="/js/lister.js"></script>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <%- include('./components/nav.html') %>
+        <!-- Section-->
+        <main class="py-4 d-flex flex-column">
+            <div class="container px-4 px-md-5 mt-3">
+                <h5 id="profileName"><%= profile.fName + " " + profile.lName %></h3>
+                <table>
+                    <tr>
+                        <th>Email:</th>
+                        <td><%= profile.emailMan %></td>
+                    </tr>
+                    <tr>
+                        <th>Password:</th>
+                        <td><%= profile.pw %></td>
+                    </tr>
+                    <tr>
+                        <th>Organization:</th>
+                        <td><%= profile.uniOrg %></td>
+                    </tr>
+                    <tr>
+                        <th>Position/Title:</th>
+                        <td><%= profile.posTitle %></td>
+                    </tr>
+                </table>
+                <!--Use ejs to load a different template for tags and categories, but give both templates the same id-->
+                <!-- EJS can load the cards here or they can be loaded via ajax in lister.js -->
+            </div>
+        </main>
+        <!-- Footer-->
+        <%- include('./components/footer.html') %>
+</body>
+
+</html>
