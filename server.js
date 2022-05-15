@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 // original models
 const { errorMan } = require('./modules/fileHelpers.js');
 const vh = require('./modules/verifyHelper.js');
-const open = require('open');
+// const open = require('open');
 
 // require all npm packages
 const bodyParser = require('body-parser');
@@ -33,7 +33,6 @@ app.use(express.static(`${folder}`));
 const podAPIs = require("./routers/podAPI");
 const podPages = require("./routers/podPages");
 const auth = require("./routers/auth");
-const { Db } = require('mongodb');
 
 app.use("/podcasts/api", podAPIs);
 app.use("/podcasts", podPages);
@@ -121,5 +120,5 @@ app.post("/api/formInfo/:field/check", (req, res) => {
 app.listen(port, async() => {
     console.log(`Example app listening on port ${port}`);
     // comment this out if you don't want to have a window open every launch
-    await open(`http://localhost:${port}`);
+    // await open(`http://localhost:${port}`);
 });
