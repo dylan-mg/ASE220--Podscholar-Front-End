@@ -8,9 +8,10 @@ const fs = require('fs')
 const fileHelpers = require('../modules/fileHelpers.js');
 const vh = require('../modules/verifyHelper.js');
 const { MongoClient, Db } = require("mongodb");
+const URL = process.env.MONGOURI;
+const client = new MongoClient(URL);
 
 const dbName = process.env.dbname // name of database for mongoDB
-const URL = process.env.MONGOURI;
 
 
 // access database and set up object for reference
@@ -18,16 +19,18 @@ const URL = process.env.MONGOURI;
  * @type {Db} MongoDB database Object
  */
 let db;
-MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+client.connect((err, result) => {
     if (err) {
         console.log('Error connecting to MongoDB');
+        console.log(err);
         throw err;
     }
     try {
-        db = client.db(dbName);
+        db = result.db(dbName);
         console.log("active");
     } catch (error) {
         console.log('Error finding database');
+        console.log(error);
         throw error;
     }
 });
