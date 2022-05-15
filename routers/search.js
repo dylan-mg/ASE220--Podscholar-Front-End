@@ -156,7 +156,6 @@ router.get('/api/search/authors/:author/date/:date', function (req, res) {
         res.send(result);
     })
 })
-
 // search category, keyword and date in database
 router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/date/:date', function (req, res) {
     var category = req.params.scientific_discipline;
@@ -476,8 +475,6 @@ router.get('/api/search/:options', function (req, res) {
         else if (selected[0] == 'author' && selected[1] == 'doi' && selected[2] == 'date') {
             res.redirect('/api/search/authors/' + author + '/doi/' + doi + '/date/' + date)
         }
-
-
     }
     else if (selected.length == 4) {
         if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'author' && selected[3] == 'date') {
