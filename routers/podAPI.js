@@ -22,6 +22,7 @@ let db;
 client.connect((err, result) => {
     if (err) {
         console.log('Error connecting to MongoDB');
+        console.log(err);
         throw err;
     }
     try {
@@ -29,6 +30,7 @@ client.connect((err, result) => {
         console.log("active");
     } catch (error) {
         console.log('Error finding database');
+        console.log(error);
         throw error;
     }
 });
