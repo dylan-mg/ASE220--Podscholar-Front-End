@@ -8,10 +8,10 @@ const fs = require('fs')
 const fileHelpers = require('../modules/fileHelpers.js');
 const vh = require('../modules/verifyHelper.js');
 const { MongoClient, Db } = require("mongodb");
-const client = new MongoClient(process.env.MONGOURI);
+const URL = process.env.MONGOURI;
+const client = new MongoClient(URL);
 
 const dbName = process.env.dbname // name of database for mongoDB
-const URL = process.env.MONGOURI;
 
 
 // access database and set up object for reference
