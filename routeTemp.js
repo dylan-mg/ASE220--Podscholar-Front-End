@@ -659,7 +659,7 @@ router.post('/api/auth/signin', function (req, res) {
             console.log('Error finding user');
             throw err;
         }
-        res.send({result.password,user.password});
+        res.send([result.password,user.password]);
     })
 })
 

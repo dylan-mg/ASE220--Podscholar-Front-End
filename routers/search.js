@@ -30,6 +30,14 @@ router.get('/api/search/authors/:author', function (req, res) {
         res.send(result);
     })
 })
+// search for doi
+router.get('/api/search/doi/:doi', function (req, res) {
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ doi: doi }).toArray(function (err, result) {
+        if (err) throw err;
+        res.send(result);
+    })
+})
 // search for keyword in database
 router.get('/api/search/keyword/:keyword', function (req, res) {
     var keyword = req.params.keyword;
@@ -57,6 +65,18 @@ router.get('/api/search/categories/:scientific_discipline/keyword/:keyword', fun
     var category = req.params.scientific_discipline;
     var keyword = req.params.keyword;
     db.collection('podcasts').find({ categories: category, keywords: keyword }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search category and doi in database
+router.get('/api/search/categories/:scientific_discipline/doi/:doi', function (req, res) {
+    var category = req.params.scientific_discipline;
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ categories: category, doi: doi }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
         if (err) {
             console.log('Error finding podcasts');
             throw err;
@@ -100,6 +120,18 @@ router.get('/api/search/keywords/:keyword/date/:date', function (req, res) {
         res.send(result);
     })
 })
+// search keyword and doi in database
+router.get('/api/search/keywords/:keyword/doi/:doi', function (req, res) {
+    var keyword = req.params.keyword;
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ keywords: keyword, doi: doi }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
 // search keyword and author in database
 router.get('/api/search/keywords/:keyword/authors/:author', function (req, res) {
     var keyword = req.params.keyword;
@@ -124,6 +156,7 @@ router.get('/api/search/authors/:author/date/:date', function (req, res) {
         res.send(result);
     })
 })
+
 // search category, keyword and date in database
 router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/date/:date', function (req, res) {
     var category = req.params.scientific_discipline;
@@ -176,6 +209,30 @@ router.get('/api/search/keywords/:keyword/authors/:author/date/:date', function 
         res.send(result);
     })
 })
+// search author and doi in database
+router.get('/api/search/authors/:author/doi/:doi', function (req, res) {
+    var author = req.params.author;
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ author: author, doi: doi }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search date and doi in database
+router.get('/api/search/date/:date/doi/:doi', function (req, res) {
+    var date = req.params.date;
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ date: date, doi: doi }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
 // search category, keyword, author and date in database
 router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/authors/:author/date/:date', function (req, res) {
     var category = req.params.scientific_discipline;
@@ -190,11 +247,82 @@ router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/auth
         res.send(result);
     })
 })
+// search category, keyword, author and doi in database
+router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/authors/:author/doi/:doi', function (req, res) {
+    var category = req.params.scientific_discipline;
+    var keyword = req.params.keyword;
+    var author = req.params.author;
+    var doi = req.params.doi;
+    db.collection('podcasts').find({ categories: category, keywords: keyword, author: author, doi: doi }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search category, keyword, doi and date in database
+router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/doi/:doi/date/:date', function (req, res) {
+    var category = req.params.scientific_discipline;
+    var keyword = req.params.keyword;
+    var doi = req.params.doi;
+    var date = req.params.date;
+    db.collection('podcasts').find({ categories: category, keywords: keyword, doi: doi, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search category, author, doi and date in database
+router.get('/api/search/categories/:scientific_discipline/authors/:author/doi/:doi/date/:date', function (req, res) {
+    var category = req.params.scientific_discipline;
+    var author = req.params.author;
+    var doi = req.params.doi;
+    var date = req.params.date;
+    db.collection('podcasts').find({ categories: category, author: author, doi: doi, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search keyword, author, doi and date in database
+router.get('/api/search/keywords/:keyword/authors/:author/doi/:doi/date/:date', function (req, res) {
+    var keyword = req.params.keyword;
+    var author = req.params.author;
+    var doi = req.params.doi;
+    var date = req.params.date;
+    db.collection('podcasts').find({ keywords: keyword, author: author, doi: doi, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
+// search category, keyword, author, doi and date in database
+router.get('/api/search/categories/:scientific_discipline/keywords/:keyword/authors/:author/doi/:doi/date/:date', function (req, res) {
+    var category = req.params.scientific_discipline;
+    var keyword = req.params.keyword;
+    var author = req.params.author;
+    var doi = req.params.doi;
+    var date = req.params.date;
+    db.collection('podcasts').find({ categories: category, keywords: keyword, author: author, doi: doi, date: date }).sort({ _id: -1 }).limit(10).toArray(function (err, result) {
+        if (err) {
+            console.log('Error finding podcasts');
+            throw err;
+        }
+        res.send(result);
+    })
+})
 // search one of each in database
 router.get('/api/search/:options', function (req, res) {
     var options = req.params.options;
     var selected = [];
-    var keyword, date, category, author;
+    var keyword, date, category, author, doi;
     options.split('_')
     for (i = 0; i < options.length; i++) {
         options.split(':')
@@ -216,12 +344,17 @@ router.get('/api/search/:options', function (req, res) {
             author = options[i][1];
             selected.append('author')
         }
+        else if (options[i][0] == 'doi') {
+            doi = options[i][1];
+            selected.append('doi')
+        }
     }
     if (selected.length > 1) {
         var selectedArranged = [];
         var kholder;
         var dholder;
         var aholder;
+        var doholder;
         for (i = 0; i < selected.length; i++) {
             if (selected[i] == 'category') {
                 selectedArranged.append['category']
@@ -235,7 +368,7 @@ router.get('/api/search/:options', function (req, res) {
                 }
             }
             else if(selected[i]=='date'){
-                if(selectedArranged.length==3){
+                if(selectedArranged.length==4){
                     selectedArranged.append['date']
                 }
                 else{
@@ -250,12 +383,23 @@ router.get('/api/search/:options', function (req, res) {
                     aholder = 'author'
                 }
             }
+            else if(selected[i]=='doi'){
+                if(selectedArranged.length==3){
+                    selectedArranged.append['doi']
+                }
+                else{
+                    doholder = 'doi'
+                }
+            }
         }
         if(kholder=='keyword'){
             selectedArranged.append['keyword']
         }
         if(aholder=='author'){
             selectedArranged.append['author']
+        }
+        if(doholder == 'doi'){
+            selectedArranged.append['doi']
         }
         if(dholder=='date'){
             selectedArranged.append['date']
@@ -294,6 +438,18 @@ router.get('/api/search/:options', function (req, res) {
         else if (selected[0] == 'date' && selected[1] == 'author') {
             res.redirect('/api/search/date/' + date + '/authors/' + author)
         }
+        else if (selected[0] == 'category' && selected[1] == 'doi') {
+            res.redirect('/api/search/categories/' + category + '/doi/' + doi)
+        }
+        else if (selected[0] == 'keyword' && selected[1] == 'doi') {
+            res.redirect('/api/search/keywords/' + keyword + '/doi/' + doi)
+        }
+        else if (selected[0] == 'doi' && selected[1] == 'date') {
+            res.redirect('/api/search/doi/' + doi + '/date/' + date)
+        }
+        else if (selected[0] == 'author' && selected[1] == 'doi') {
+            res.redirect('/api/search/authors/' + author + '/doi/' + doi)
+        }
     }
     else if (selected.length == 3) {
         if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'date') {
@@ -308,12 +464,37 @@ router.get('/api/search/:options', function (req, res) {
         else if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'author') {
             res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/authors/' + author)
         }
+        else if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'doi') {
+            res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/doi/' + doi)
+        }
+        else if (selected[0] == 'category' && selected[1] == 'author' && selected[2] == 'doi') {
+            res.redirect('/api/search/categories/' + category + '/authors/' + author + '/doi/' + doi)
+        }
+        else if (selected[0] == 'keyword' && selected[1] == 'author' && selected[2] == 'doi') {
+            res.redirect('/api/search/keywords/' + keyword + '/authors/' + author + '/doi/' + doi)
+        }
+        else if (selected[0] == 'author' && selected[1] == 'doi' && selected[2] == 'date') {
+            res.redirect('/api/search/authors/' + author + '/doi/' + doi + '/date/' + date)
+        }
+
 
     }
     else if (selected.length == 4) {
-        if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'date' && selected[3] == 'author') {
-            res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/date/' + date + '/authors/' + author)
+        if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'author' && selected[3] == 'date') {
+            res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/author/' + author + '/date/' + date)
+        }
+        else if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'doi' && selected[3] == 'date') {
+            res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/doi/' + doi + '/date/' + date)
+        }
+        else if (selected[0] == 'category' && selected[1] == 'author' && selected[2] == 'doi' && selected[3] == 'date') {
+            res.redirect('/api/search/categories/' + category + '/authors/' + author + '/doi/' + doi + '/date/' + date)
+        }
+        else if (selected[0] == 'keyword' && selected[1] == 'author' && selected[2] == 'doi' && selected[3] == 'date') {
+            res.redirect('/api/search/keywords/' + keyword + '/authors/' + author + '/doi/' + doi + '/date/' + date)
+        }
+        else if (selected[0] == 'category' && selected[1] == 'keyword' && selected[2] == 'author' && selected[3] == 'doi') {
+            res.redirect('/api/search/categories/' + category + '/keywords/' + keyword + '/author/' + author + '/doi/' + doi)
         }
     }
 })
-module.exports ={ router }
+module.exports = router 
