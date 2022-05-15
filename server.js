@@ -4,6 +4,8 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
+console.log(process.env.MONGOURI);
+
 // original models
 const { errorMan } = require('./modules/fileHelpers.js');
 const vh = require('./modules/verifyHelper.js');
