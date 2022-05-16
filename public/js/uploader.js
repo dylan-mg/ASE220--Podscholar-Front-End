@@ -78,39 +78,25 @@ function verifyPod(e, emails) {
         return false;
     }
 
-    let doiStuff = { doi: $("#doi").val() };
+    // eg { doi: sdfjkldajsf, [email1, email2, etc] }
+    let sendData = { doi: $("#doi").val(), emails: emails };
 
     $.ajax({
         type: "POST",
-        url: "/api/formInfo/doi/check",
+        url: "/api/formInfo/check",
         contentType: "application/json",
-        data: JSON.stringify(doiStuff),
+        data: JSON.stringify(sendData),
         error: (xhr, status) => {
             alert("Cannot Access Data at this time. Please Try again later");
         },
         success: (data) => {
             if (data.message !== true) {
                 return false;
+            } else {
+                return true;
             }
         }
     });
-
-    $.ajax({
-        type: "POST",
-        url: "/api/formInfo/email/check",
-        contentType: "application/json",
-        data: JSON.stringify(emails),
-        error: (xhr, status) => {
-            alert("Cannot Access Data at this time. Please Try again later");
-        },
-        success: (data) => {
-            if (data.message !== true) {
-                false;
-            }
-        }
-    });
-
-    return true;
 }
 
 /**
@@ -173,51 +159,6 @@ function uploadPod(e) {
         "ratings": [],
         "publishers": e.target[2].value,
         "pubDate": e.target[5].value */
-
-        // TODO input validation!
-        /*     $.ajax({
-                type: "GET",
-                url: "https://jsonblob.com/api/jsonBlob/952471299104718848",
-                contentType: "application/json",
-                error: (xhr, status) => {
-                    // if the request fails, this function executes.
-                    //      xhr is the request sent and some info about the error
-                    //      status is usually a small string describing the error
-    
-                    // This bit will be different on each page, but is a good placeholder
-                    alert("Cannot Access Data at this time. Please Try again later");
-                },
-                success: (podData) => {
-                    newPodData.ID = podData.length;
-                    // push new 
-                    podData.push(newPodData);
-    
-                    $.ajax({
-                        type: "PUT",
-                        url: "https://jsonblob.com/api/jsonBlob/952471299104718848",
-                        contentType: "application/json",
-                        dataType: "application/json",
-                        data: JSON.stringify(podData),
-                        error: (xhr, status) => {
-                            // if the request fails, this function executes.
-                            //      xhr is the request sent and some info about the error
-                            //      status is usually a small string describing the error
-    
-                            // This bit will be different on each page, but is a good placeholder
-                            alert("Cannot Access Data at this time. Please Try again later");
-                        },
-                        success: (data) => {
-                            formHolder.classList.add("visually-hidden");
-                            thanksMessage.classList.remove("visually-hidden");
-    
-                            setTimeout(() => {
-                                window.location.href = "index.html"
-                            }, 15000);
-                        }
-                    });
-                }
-            }); */
-
     }
 
 }

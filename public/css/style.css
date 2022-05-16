@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Aleo:wght@400;700&family=Palanquin&display=swap');
-h3 {
+.aleo700 {
+    font-family: "Aleo", Serif;
+    font-weight: 700 !important
+}
+.aleo400 {
     font-family: "Aleo", Serif;
     font-weight: 700 !important
 }

@@ -34,8 +34,6 @@ function populateCardSimple(cardData, newCard) {
 
     // audio player
     newCard.querySelector(".card-audio").setAttribute("src", `/audio/${cardData._id}.mp3`);
-
-
 }
 
 function populateCardLoops(cardData, newCard) {
@@ -44,13 +42,14 @@ function populateCardLoops(cardData, newCard) {
     for (let i = 0; i < cardData.disciplines.length; i++) {
         // generate link to discipline pages
         let dElement = document.createElement("a");
-        let dNode = document.createTextNode(cardData.disciplines[i]);
-        // dElement.href=""
-        dElement.appendChild(dNode);
-        dElement.classList.add("text-decoration-none", "link-dark");
+        dElement.href = `/categories/${cardData.disciplines[i]}`;
 
+        // add the text
+        dElement.textContent = cardData.disciplines[i];
+        // format so the link isn't ugly
+        dElement.classList.add("text-decoration-none", "link-dark");
         if (i > 0) {
-            discHolder.textContent += ", ";
+            discHolder.innerHTML += ", ";
         }
 
         discHolder.appendChild(dElement);
@@ -102,7 +101,7 @@ function loadcard(cardData, templateMan, destination, num) {
     destination.appendChild(newCardNode);
 
     let newCard = destination.querySelector(`#card-${num}`);
-    $(".card-linkMan", newCard).attr("href", `/pods/${cardData._id}`);
+    $(".card-linkMan", newCard).attr("href", `/podcasts/${cardData._id}`);
     // populate the card
     populateCardSimple(cardData, newCard, cardData._id);
     populateCardLoops(cardData, newCard);

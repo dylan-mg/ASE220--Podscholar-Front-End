@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // original models
 const { errorMan } = require('./modules/fileHelpers.js');
-const vh = require('./modules/verifyHelper.js');
+const vh = require("./modules/verifyHelper");
 // const open = require('open');
 
 // require all npm packages
@@ -31,12 +31,18 @@ const folder = "public";
 app.use(express.static(`${folder}`));
 
 const podAPIs = require("./routers/podAPI");
-const podPages = require("./routers/podPages");
-const auth = require("./routers/auth");
-
 app.use("/podcasts/api", podAPIs);
+
+const podPages = require("./routers/podPages");
 app.use("/podcasts", podPages);
+
+const auth = require("./routers/auth");
 app.use("/sign", auth);
+
+const lister = require("./routers/categoriesTags");
+const { BADHINTS } = require('dns');
+app.use("/", lister);
+
 
 // DOOR [ / ]
 // * GET
@@ -87,6 +93,8 @@ app.get("/pages/:pageName", (req, res) => {
     }
 });
 
+
+/* // TODO implement in future version
 // DOOR [ /api/buttons ]
 // * GET
 // todo Send buttons html for navbar
@@ -100,24 +108,20 @@ app.get('/api/buttons', (req, res) => {
             console.table(dat.toString());
     });
     res.json({ test: "received" });
-});
+}); */
 
-// DOOR [ /api/formInfo/:field/check ]
+// DOOR [ /api/formInfo/check ]
 // * POST
-// todo Verifies the designated form data
-app.post("/api/formInfo/:field/check", (req, res) => {
+// todo Verifies form data ()
+app.post("/api/formInfo/check", (req, res) => {
     console.table(req.body);
     // todo to tested later, for now, just ret true
-    /* if (req.params.field == doi) {
-        vh.doiVerifier(req.body.doi);
-    } else if (req.params.field == email) {
-        vh.emailVerifier(req.body.email);
-    } */
+    // if (vh.doiVerifier(req.body.doi) && vh.emailVerifier(req.body.emails));
     res.json({ message: true });
 });
 
 // start server
-app.listen(port, async() => {
+app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
     // comment this out if you don't want to have a window open every launch
     // await open(`http://localhost:${port}`);

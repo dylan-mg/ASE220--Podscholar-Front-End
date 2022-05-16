@@ -26,6 +26,7 @@ MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
     }
     try {
         db = client.db(dbName);
+        console.log("MongoDB active in auth.js");
     } catch (error) {
         console.log('Error finding database');
         throw error;

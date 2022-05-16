@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { emailVerifier } = require('./verifyHelper');
+const { emailVerifier} = require('./verifyHelper');
 
 const { MongoClient, Db } = require("mongodb");
 
@@ -19,6 +19,7 @@ MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
     }
     try {
         db = client.db(dbName);
+        console.log("MongoDB in authHelper");
     } catch (error) {
         console.log('Error finding database');
         throw error;
