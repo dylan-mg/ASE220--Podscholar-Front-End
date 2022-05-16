@@ -82,6 +82,16 @@ router.get("/Categories/:id/count", (req, res) => {
     }
 });
 
+router.get("/categories/:_id", (req, res) => {
+    db.collection('categories').findOne({ _id: req.params._id }, function(err, category) {
+        if (err) {
+            console.log('Error finding categories');
+            throw err;
+        }
+        res.render('ct-detials.ejs', { data: category });
+    })
+});
+
 // DOOR [ /keywords ]
 // * GET
 // Tags index page
@@ -119,6 +129,16 @@ router.get("/Keywords/:id/count", (req, res) => {
     } catch (err) {
         res.send({count: "N/A"});
     }
+});
+
+router.get("/keywords/:_id", (req, res) => {
+    db.collection('keywords').findOne({ _id: req.params._id }, function(err, keyword) {
+        if (err) {
+            console.log('Error finding categories');
+            throw err;
+        }
+        res.render('ct-detials.ejs', { data: keyword });
+    })
 });
 
 function sorter(a, b) {
