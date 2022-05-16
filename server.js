@@ -40,8 +40,13 @@ const auth = require("./routers/auth");
 app.use("/sign", auth);
 
 const lister = require("./routers/categoriesTags");
-const { BADHINTS } = require('dns');
 app.use("/", lister);
+
+const searchAPI = require("./routers/searchAPI");
+app.use("/api/search", searchAPI);
+
+const searchPages = require("./routers/searchPages");
+app.use("/search", searchPages);
 
 
 // DOOR [ / ]

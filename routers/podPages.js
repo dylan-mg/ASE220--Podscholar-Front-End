@@ -38,7 +38,7 @@ router.get('/create', (req, res) => {
             console.log(err);
             res.redirect("/");
         } else {
-            res.render("upload.ejs", {categs: result});
+            res.render("upload.ejs", { categs: result });
         }
     });
 });
