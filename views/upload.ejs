@@ -54,7 +54,7 @@
                                 <label for="category">Category: <span class="text-danger">*</span></label>
                                 <select name="category" id="category" class="form-select" required>
                                     <% for (let categ in categs) { %>
-                                        <option value="<%- categ %>"><%- categ %></option>
+                                        <option value="<%- categs[categ]._id %>"><%- categs[categ]._id %></option>
                                         <% } %>
                                 </select>
                             </div>
@@ -107,18 +107,18 @@
 
                         <li class="my-2 px-md-5 px-1">
                             <fieldset name="files" class="d-flex flex-column">
-                                <legend class="mb-auto">Files <span class="text-danger">*</span></legend>
+                                <legend class="mb-auto">Files</legend>
                                 <!--!PODCAST-->
                                 <div class="d-flex flex-row flex-wrap flex-md-nowrap">
                                     <div class="d-flex flex-wrap flex-row me-md-2">
-                                        <label for="podFile">Podcast:</label>
+                                        <label for="podFile">Podcast:<span class="text-danger">*</span></label>
                                         <input type="file" accept=".mp3" id="podFile" name="podFile" class="form-control">
                                         <small id="podDesc" class="form-text text-muted">Please upload an .mp3 file.</small>
                                     </div>
 
                                     <!--!BIBTEX-->
                                     <div class="d-flex flex-wrap flex-row ">
-                                        <label for="file">Bibtex File:</label>
+                                        <label for="file">Bibtex File:<span class="text-danger">*</span></label>
                                         <input type="file" accept=".bib" id="bibFile" name="bibFile" class="form-control">
                                         <small id="bibDesc" class="form-text text-muted">Please upload a .bib file.</small>
                                     </div>

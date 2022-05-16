@@ -37,3 +37,13 @@
     font-family: "Aleo", serif;
     font-weight: 400;
 }
+
+.card-container {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .card-container {
+      width : 50%;
+    }
+  }

@@ -6,13 +6,11 @@ const express = require('express')
 const router = express.Router()
 const fs = require('fs')
 const fileHelpers = require('../modules/fileHelpers.js');
-const vh = require('../modules/verifyHelper.js');
+
 const { MongoClient, Db } = require("mongodb");
 const URL = process.env.MONGOURI;
 const client = new MongoClient(URL);
-
 const dbName = process.env.dbname // name of database for mongoDB
-
 
 // access database and set up object for reference
 /**
@@ -22,15 +20,13 @@ let db;
 client.connect((err, result) => {
     if (err) {
         console.log('Error connecting to MongoDB');
-        console.log(err);
         throw err;
     }
     try {
         db = result.db(dbName);
-        console.log("active");
+        console.log("MongoDB active in podAPI");
     } catch (error) {
         console.log('Error finding database');
-        console.log(error);
         throw error;
     }
 });
