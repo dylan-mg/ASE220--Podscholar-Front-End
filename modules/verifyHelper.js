@@ -1,12 +1,44 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
+const { MongoClient, Db } = require("mongodb");
+const dbName = process.env.dbname; // name of database for mongoDB
+const URL = process.env.MONGOURI;
+
+// access database and set up object for reference
+/**
+ * @type {Db} MongoDB database Object
+ */
+let db;
+MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+        throw err;
+    }
+    try {
+        db = client.db(dbName);
+        console.log("MongoDB in verifyHelper");
+    } catch (error) {
+        console.log('Error finding database');
+        throw error;
+    }
+});
+
 /**
  * verifies an email is valid against a regex
  * @param {string} inputEmail email string
- * @returns {boolean} if email matches regex
+ * @returns {Promise} true if email matches regex
  */
 function emailVerifier(inputEmail) {
     const emailRegEx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
-
-    return emailRegEx.test(inputEmail);
+    return new Promise((resolve, reject) => {
+        if (emailRegEx.test(inputEmail)) {
+            resolve();
+        } else {
+            reject();
+        }
+    });
 }
 
 /**
@@ -34,7 +66,33 @@ function doiVerifier(inputDOI) {
     return false;
 }
 
+async function idVerifier(id, ext, track) {
+    return new Promise((resolve, reject) => {
+        db.collection("users").find({ _id: `${id}${ext}` }).toArray((err, result) => {
+            if (err) {
+                console.log(err);
+                console.log("Problem with lookup");
+                reject("Problem with Lookup");
+            } else if (result.length == 0) {
+                // valid _id found
+                console.log(result);
+                resolve(`${id}${ext}`);
+            } else {
+                // _id is taken
+                idVerifier(id, `-${track++}`, track)
+                    .then((correctExt) => {
+                        resolve(correctExt);
+                    })
+                    .catch((msg) => {
+                        reject(msg);
+                    });
+            }
+        });
+    });
+}
+
 module.exports = {
     emailVerifier,
-    doiVerifier
+    doiVerifier,
+    idVerifier
 }

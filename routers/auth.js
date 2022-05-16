@@ -4,7 +4,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const router = express.Router()
-const fs = require('fs')
 const authHelper = require('../modules/authHelper.js');
 const vh = require('../modules/verifyHelper.js');
 const bcrypt = require("bcrypt");
@@ -12,6 +11,11 @@ const { MongoClient, Db } = require("mongodb");
 
 const dbName = process.env.dbname; // name of database for mongoDB
 const URL = process.env.MONGOURI;
+const MESSAGES = {
+    alreadyExists: "An Email with this account already exists",
+    failedRegEX: "Please Enter a valid Email",
+    dbLookup: "Error with Connecting To Database, please try again"
+}
 
 
 // access database and set up object for reference
@@ -32,10 +36,6 @@ MongoClient.connect(URL, { useNewUrlParser: true }, (err, client) => {
         throw error;
     }
 });
-
-const BIBTEX_PATH = process.env.BIBTEX_PATH;
-const JSON_PATH = process.env.JSON_PATH;
-const USER_PATH = process.env.USER_PATH;
 
 // DOOR [ /sign/out ]
 // * GET
@@ -65,7 +65,7 @@ router.post("/in", (req, res) => {
             res.send({ verStat: false });
         } else {
             let cpass = req.body.password.toString();
-            let hashed = bcrypt.hashSync(cpass, "$2b$10$0FwjQ0By1QJa711tC3RWcu", 10);
+            let hashed = bcrypt.hashSync(cpass, process.env.salt, 10);
             if (userData.password == hashed) {
                 req.session.user = {
                     id: userData._id,
@@ -94,50 +94,72 @@ router.get("/up", (req, res) => {
 // * POST
 // Verifies email, creates new entry, updates relevant file
 router.post("/up", (req, res) => {
-    let echeck = authHelper.emailCheck(req.body, res);
+    console.log("received");
 
-    if (echeck != 0) {
-        console.log("Unsuccessful Email Check");
-    } else {
-        console.log("success");
-        let newEntryData = req.body;
-        let fixedEmail = req.body.email.toLowerCase();
-        let fixedFname = req.body.fName.toLowerCase();
-        let fixedLname = req.body.lName.toLowerCase();
-        let fileName = `${fixedFname}-${fixedLname}`
+    authHelper.emailCheck(req.body.email)
+        .then(() => {
+            console.log("success");
+            // adjust name for storage
+            let fixedFname = req.body.fName.toLowerCase();
+            let fixedLname = req.body.lName.toLowerCase();
+            let mdb_id = `${fixedFname}-${fixedLname}`
 
-        newEntryData.saves = [];
-        newEntryData.likes = [];
-        newEntryData.role = 0;
-        let ext = "";
-        var track = 1;
-        while (fs.existsSync(`${USER_PATH}/${fileName}${ext}.json`)) {
-            ext = "-" + track++;
-        }
-        fileName += ext;
-        fs.writeFileSync(`${USER_PATH}/${fileName}.json`, JSON.stringify(newEntryData));
+            vh.idVerifier(mdb_id, "", 1)
+                .then((correctExtension) => {
+                    let newEntryData = req.body;
+                    newEntryData.email = req.body.email.toLowerCase();
+                    newEntryData.saves = [];
+                    newEntryData.likes = [];
+                    newEntryData.role = 0;
+                    newEntryData.password = bcrypt.hashSync(newEntryData.password, process.env.salt, 10);
+                    // generate the object to hold the entry
+                    newEntryData._id = correctExtension;
+                    // insert it
+                    console.log(`New User: ${correctExtension}`);
 
-        let mapStuff = fs.openSync(`${JSON_PATH}/user_map.json`);
-        let rawData = fs.readFileSync(`${JSON_PATH}/user_map.json`);
-        let parsedData = JSON.parse(rawData.toString());
-        parsedData[req.body.email] = fileName;
-        fs.writeFileSync(`${JSON_PATH}/user_map.json`, JSON.stringify(parsedData));
-        fs.closeSync(mapStuff);
+                    db.collection("users").insertOne(newEntryData)
+                        .then((result) => {
+                            console.log("Successful Sign Up");
+                            console.log(result);
+                            req.session.user = {
+                                id: newEntryData._id,
+                                fName: newEntryData.fName,
+                                lName: newEntryData.lName,
+                                role: newEntryData.role
+                            };
+                            res.send({ message: newEntryData._id });
+                        })
+                        .catch((reason) => {
+                            console.log("Error Inserting User");
+                            console.log(reason);
 
-        res.send({ message: fileName });
-    }
+                            res.send({ returnStatus: "Error Signing up, Please Try again " })
+                        })
+                })
+                .catch((errorMessage) => {
+                    console.log(errorMessage);
+                    res.send({ returnStatus: MESSAGES.dbLookup });
+                });
+        })
+        .catch((msg) => {
+            // failed regex is 1, alreadyExists is 2
+            res.send({ returnStatus: MESSAGES[msg] });
+        })
 });
 
 // DOOR [ /sign/up/email ]
 // * POST
 // verifies the email, returns value if success
-router.post("/up/email", (req, res) => {
-    let echeck = authHelper.emailCheck(req.body, res);
-    if (echeck == 0) {
-        console.log("success");
-        res.send({ verified: 0 });
-    }
-    // todo add else
+router.post("/up/email", async(req, res) => {
+    authHelper.emailCheck(req.body.email)
+        .then(() => {
+            console.log("success");
+            res.send({ verified: 0 });
+        })
+        .catch((msg) => {
+            console.log(msg);
+            res.send({ verified: 1, returnStatus: MESSAGES[msg] });
+        });
 });
 
 module.exports = router;

@@ -2,7 +2,6 @@ function signInStart() {
     // attach sign in listener to form
     document.querySelector("#signForm").addEventListener("submit", function(e) {
         e.preventDefault();
-
         signIn(e);
     });
 }
@@ -50,47 +49,53 @@ function signIn(e) {
 
 function signUpSetup() {
     document.querySelector("#formMan").addEventListener("submit", (e) => {
+        e.preventDefault();
+        $("#spinner").removeClass("visually-hidden");
         signUp(e);
     });
 }
 
 function signUp(e) {
-    e.preventDefault();
-
     if (verif(e.target) == false) {
         alert("Submission Failed");
+        $("#spinner").addClass("visually-hidden");
     }
 }
 
+/**
+ * 
+ * @param {FormData} formData 
+ * @returns {Promise}
+ */
 function emailCheck(formData) {
-    let sendData = {
-        email: formData.email
-    }
+    return new Promise((resolve, reject) => {
+        let sendData = {
+            email: formData.email
+        }
 
-    $.ajax({
-        type: "POST",
-        url: "/sign/up/email",
-        contentType: "application/json",
-        data: JSON.stringify(sendData),
-        success: (retdata) => {
-            if (retdata.verified == 2) {
-                emailTakenError.classList.remove("visually-hidden");
-                return false;
-            } else if (retdata.verified == 1) {
-                badEmailError.classList.remove("visually-hidden");
-                return false;
-            } else {
-                return true;
-            }
-        },
-        error: (xhr, status) => {
-            console.log(xhr);
-            console.log(status);
-            console.log("object");
-            alert("Cannot Register at this time. Please Try again later");
-            return false;
-        },
-    });
+        $.ajax({
+            type: "POST",
+            url: "/sign/up/email",
+            contentType: "application/json",
+            data: JSON.stringify(sendData),
+            success: (retdata) => {
+                if (retdata.verified == 0) {
+                    resolve();
+                } else {
+                    $("#errorMan").text(retdata.returnStatus);
+                    errorMan.classList.remove("visually-hidden");
+                    reject();
+                }
+            },
+            error: (xhr, status) => {
+                console.log(xhr);
+                console.log(status);
+                console.log("object");
+                alert("Cannot Register at this time. Please Try again later");
+                reject();
+            },
+        });
+    })
 }
 
 function verif(formData) {
@@ -108,40 +113,43 @@ function verif(formData) {
         uniOrg: formData[4].value,
     };
 
-    if (emailCheck(dataFromForm) == false) {
-        return false;
-    }
+    emailCheck(dataFromForm)
+        .then(() => {
+            $.ajax({
+                type: "POST",
+                url: "/sign/up",
+                contentType: "application/json",
+                data: JSON.stringify(dataFromForm),
+                error: (xhr, status) => {
+                    console.log(xhr);
+                    alert("Cannot Register at this time. Please Try again later");
+                },
+                success: (data) => {
+                    console.log(data);
+                    if (data.message) {
+                        formMan.classList.add("visually-hidden");
 
-    $.ajax({
-        type: "POST",
-        url: "/sign/up",
-        contentType: "application/json",
-        data: JSON.stringify(dataFromForm),
-        error: (xhr, status) => {
-            console.log(xhr);
-            alert("Cannot Register at this time. Please Try again later");
-        },
-        success: (data) => {
-            if (data.message) {
-                formMan.classList.add("visually-hidden");
+                        // show done message
+                        doneMessage.classList.remove("visually-hidden");
+                        $("#spinner").addClass("visually-hidden");
 
-                // show done message
-                doneMessage.classList.remove("visually-hidden");
+                        // log them in
+                        sessionStorage.setItem("username", data.message);
+                        sessionStorage.setItem("auth", true);
 
-                // log them in
-                sessionStorage.setItem("username", data.message);
-                sessionStorage.setItem("auth", true);
-
-                // redirect automatically
-                setTimeout(() => {
-                    window.location.href = "/"
-                }, 10000);
-                return true;
-            } else {
-                alert("Please Resubmit your form");
-                return false;
-            }
-        }
-    })
-
+                        // redirect automatically
+                        setTimeout(() => {
+                            window.location.href = "/"
+                        }, 10000);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        })
+        .catch(() => {
+            $("#spinner").addClass("visually-hidden");
+            return false;
+        });
 }

@@ -29,12 +29,6 @@ client.connect((err, result) => {
     }
 });
 
-function fillkeys() {
-    db.collection("podcasts").find().toArray((err, result) => {
-
-    })
-}
-
 // DOOR [ /categories ]
 // * GET
 // Lists either the categories or tags
@@ -134,7 +128,7 @@ router.get("/Keywords/:id/count", (req, res) => {
 router.get("/keywords/:_id", (req, res) => {
     db.collection('keywords').findOne({ _id: req.params._id }, function(err, keyword) {
         if (err) {
-            console.log('Error finding categories');
+            console.log('Error finding keywords');
             throw err;
         }
         res.render('ct-detials.ejs', { data: keyword });

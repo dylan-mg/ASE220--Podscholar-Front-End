@@ -31,51 +31,54 @@
 
 <body>
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark p-0">
         <div class="d-flex w-100 justify-content-between">
             <div class="ms-5 align-self-center">
                 <a class="navbar-brand header-Logo fs-1" href="/">PodScholar</a>
             </div>
         </div>
     </nav>
-
-    <main class="mx-md-5">
-        <form id="formMan" class="d-flex align-items-center flex-column m-5 px-md-5">
+    <div id="spinner" class="visually-hidden border-2 border-primary position-fixed d-flex flex-column h-100 w-100 py-5" style="background-color: whitesmoke; opacity:0.5">
+        <div class="spinner-border d-flex align-self-center my-5" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <main class="mx-lg-5">
+        <form id="formMan" class="d-flex align-items-center flex-column m-5 px-lg-5">
             <!-- Sign Up title-->
             <h3 class="pt-2 px-2">Register User Account</h3>
             <small>Complete the form to upload podcasts</small>
             <small class="mb-4 text-danger">* indicates required fields</small>
 
+            <div id="errorMan" class="visually-hidden border border-2 border-danger bg-opacity-25 w-75 d-flex justify-content-center p-2 bg-danger">
+            </div>
             <!-- Name -->
             <div class="my-2 d-flex flex-row flex-wrap">
-                <div class="ms-md-4 me-md-2 mx-4 px-2">
+                <div class="ms-lg-4 me-lg-2 mx-4 px-2">
                     <label for="fName" class="form-label">First Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="fName" name="fName" required/>
                 </div>
-                <div class="ms-md-2 me-md-4 mx-4 px-2">
+                <div class="ms-lg-2 me-lg-4 mx-4 px-2">
                     <label for="lName" class="form-label">Last Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="lName" name="lName" required/>
                 </div>
             </div>
 
             <!-- Email -->
-            <div class="my-2 w-75">
-                <div class="mx-md-5 px-md-5">
+            <div class="my-2 d-flex flex-row flex-fill w-75 me-5 me-md-0">
+                <div class="d-flex flex-column flex-fill">
                     <label for="emailMan" class="form-label my-1">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="emailMan" name="emailMan" required />
+                    <input type="email" class="form-control d-flex flex-fill ms-0" id="emailMan" name="emailMan" required />
                 </div>
             </div>
 
-            <strong id="emailTakenError" class="text-danger visually-hidden">Email is already taken.</strong>
-            <strong id="badEmailError" class="text-danger visually-hidden">Please Enter a valid email</strong>
-
             <!-- Position/Title -->
             <div class="my-2 d-flex flex-row flex-wrap">
-                <div class="ms-md-4 me-md-2 mx-4 px-2">
+                <div class="ms-lg-4 me-lg-2 mx-4 px-2">
                     <label for="posTitle" class="form-label my-1">Position/Title</label>
                     <input type="text" class="form-control" id="posTitle" name="posTitle" />
                 </div>
-                <div class="ms-md-2 me-md-4 mx-4 px-2">
+                <div class="ms-lg-2 me-lg-4 mx-4 px-2">
                     <label for="uniOrg" class="form-label my-1">University/Organization</label>
                     <input type="text" class="form-control" id="uniOrg" name="uniOrg" />
                 </div>
@@ -83,11 +86,11 @@
 
             <!--Password-->
             <div class="my-2 d-flex flex-row flex-wrap">
-                <div class="ms-md-4 me-md-2 mx-4 px-2">
+                <div class="ms-lg-4 me-lg-2 mx-4 px-2">
                     <label for="pw" class="form-label my-1">Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="pw" name="pw" required/>
                 </div>
-                <div class="ms-md-2 me-md-4 mx-4 px-2">
+                <div class="ms-lg-2 me-lg-4 mx-4 px-2">
                     <label for="pwc" class="form-label my-1">Confirm Password <span class="text-danger">*</span></label>
                     <input type="password" class="form-control" id="pwc" name="pwc" required/>
                 </div>
@@ -102,6 +105,7 @@
                   Please Accept the Terms and Conditions
                 </label>
             </div>
+
             <!-- Sign Up Button-->
             <button type="submit" class="btn btn-dark my-2">Sign Up!</button>
         </form>

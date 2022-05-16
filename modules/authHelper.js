@@ -1,5 +1,4 @@
-const fs = require('fs');
-const { emailVerifier} = require('./verifyHelper');
+const { emailVerifier } = require('./verifyHelper');
 
 const { MongoClient, Db } = require("mongodb");
 
@@ -56,34 +55,29 @@ function adminCheck(req, res, next) {
     }
 }
 
-function emailCheck(reqStuff, res) {
-    let reqEmail = reqStuff.email.toLowerCase();
-    const MESSAGES = {
-        alreadyExists: "An Email with this account already Exists",
-        failedRegEX: "Please Enter a valid Email"
-    }
-
-    if (emailVerifier(reqEmail)) {
-
-        db.collection("users").findOne({ "email": reqEmail }, (err, result) => {
-            if (err) {
-                console.log("failed test");
-                res.send({
-                    verified: 2,
-                    returnStatus: MESSAGES.alreadyExists
+/**
+ * 
+ * @param {string} reqEmail
+ * @returns {Promise}
+ */
+async function emailCheck(reqEmail) {
+    return new Promise((resolve, reject) => {
+        emailVerifier(reqEmail)
+            .then(() => {
+                db.collection("users").findOne({ "email": reqEmail }, (err, result) => {
+                    if (err || result == null) {
+                        console.log("email not found");
+                        resolve();
+                    } else {
+                        console.log("email found");
+                        reject("alreadyExists");
+                    }
                 });
-                return 2;
-            } else {
-                return 0;
-            }
-        });
-    } else {
-        res.send({
-            verified: 1,
-            returnStatus: MESSAGES.failedRegEX
-        });
-        return 1;
-    }
+            })
+            .catch(() => {
+                reject("failedRegEx");
+            })
+    });
 }
 
 module.exports = {
